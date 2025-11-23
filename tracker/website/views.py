@@ -25,10 +25,17 @@ def home(request):
 
 
 def login_user(request):
-    return render(request, 'login.html', {})
+    if request.user.is_authenticated:
+        return redirect('home')
+    else:
+        return render(request, 'login.html', {})
 
 
 def logout_user(request):
     logout(request)
     messages.success(request, "You have successfully logged out!")
     return redirect('home')
+
+
+def register_user(request):
+    return render(request, 'register.html', {})

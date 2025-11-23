@@ -1,14 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if user.is_authenticated %}
 <div class="col-md-6 offset-md-3 text-center mt-5">
-    {% if user.is_authenticated %}
+
     <h1>Hello World</h1>
 
 </div>
 {% else %}
+<div class="container text-center mt-5">
+    <h1 class="display-5 fw-bold">Telecom Project Tracker</h1>
+    <p class="lead mt-3">A centralized platform for managing telecom construction projects from planning to invoicing.
+    </p>
+</div>
+
+<div class="container mt-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <h5>📍 Track Work Progress</h5>
+            <p>Monitor the status of telecom construction stages such as HLD, LLD, Implementation, DCR, and Invoice.</p>
+        </div>
+        <div class="col-md-4">
+            <h5>📂 Organized Documentation</h5>
+            <p>Store project details, deliverables, and approvals in one secure platform.</p>
+        </div>
+        <div class="col-md-4">
+            <h5>📊 Real-time Status</h5>
+            <p>Stay updated with accurate progress monitoring and reduce manual reporting.</p>
+        </div>
+    </div>
+</div>
+<div class="container mt-5 text-center">
+    <h3>Built for Telecom Construction Teams</h3>
+    <p>Streamline your workflow, reduce errors, and improve project visibility across all phases.</p>
+</div>
+<div class="text-center mt-4 mb-5">
+    <a href="{% url 'register' %}" class="btn btn-success btn-lg px-5">Get Started</a>
+</div>
+
+
 <center>
-    {% include 'login.html' %}
+    <footer class="footer fixed-bottom bg-light py-3">
+
+        <p>Copyright © 2025 JohnJabZ.<br>
+            All rights reserved.<br>
+            This Project Tracker and its associated content, structure, design, and source code are the
+            intellectual property of JohnJabZ.<br>
+            No part of this product may be reproduced, distributed, or modified without prior written permission.
+        </p>
+
+    </footer>
 </center>
 {% endif %}
 
