@@ -1,0 +1,27 @@
+<div>
+    <br><br><br><br><br><br><br><br>
+    <form method="POST" action="{% url 'home' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input type="text" class="form-control" name="username" placeholder="Username" required>
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" name="password" placeholder="Password" required>
+        </div><br>
+        <button type="submit" class="btn btn-secondary">Login</button>
+
+    </form>
+</div>
+
+<br><br><br><br><br><br><br><br>
+
+<footer class="footer fixed-bottom bg-light py-3">
+    <center>
+        <p>Copyright © 2025 JohnJabZ.<br>
+            All rights reserved.<br>
+            This Project Tracker and its associated content, structure, design, and source code are the
+            intellectual property of JohnJabZ.<br>
+            No part of this product may be reproduced, distributed, or modified without prior written permission.
+        </p>
+    </center>
+</footer>
