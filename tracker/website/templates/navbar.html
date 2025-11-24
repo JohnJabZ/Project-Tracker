@@ -12,7 +12,7 @@
                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Survey</a>
+                    <a class="nav-link" href="{% url 'survey' %}">Survey</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Design</a>
@@ -26,7 +26,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        My Account
+                        Hi, {{ user.username }}
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#">Edit Profile</a></li>

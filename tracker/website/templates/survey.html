@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<div class="container-fluid px-4">
+    <h1>Survey List</h1><br>
+
+    <table class="table text-center table-striped table-hover table-boredered table-sm **mx-auto**">
+        <thead class="table-dark">
+            <a class="btn btn-outline-primary" aria-current="page" href="{% url 'add_survey_record' %}">Add Site</a><br>
+            <tr>
+                <th scope=" col">Cluster Name</th>
+                <th scope="col">Work Order</th>
+                <th scope="col">Region</th>
+                <th scope="col">RITM</th>
+                <th scope="col">Target Area</th>
+                <th scope="col">Assigned Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Responsible</th>
+                <th scope="col">Tools Stage</th>
+                <th scope="col">Tools WO Status</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Remarks</th>
+                <th scope="col">Updated At</th>
+                <th scope="col">Updated By</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% if surveys %}
+            <tr>
+                {% for survey in surveys %}
+                <td>{{ survey.cluster_name }}</td>
+                <td><a href="{% url 'survey_detail' survey.id %}">{{ survey.work_order }}</a></td>
+                <td>{{ survey.region }}</td>
+                <td>{{ survey.project_type }}</td>
+                <td>{{ survey.RITM }}</td>
+                <td>{{ survey.date_assigned }}</td>
+                <td>{{ survey.status }}</td>
+                <td>{{ survey.responsible }}</td>
+                <td>{{ survey.tools }}</td>
+                <td>{{ survey.wo_status }}</td>
+                <td>{{ survey.priority }}</td>
+                <td>{{ survey.remarks }}</td>
+                <td>{{ survey.updated_at }}</td>
+                <td>{{ survey.updated_by }}</td>
+            </tr>
+            <br>
+            {% endfor %}
+
+            {% endif %}
+
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="container text-center mt-5">
+    <h1 class="display-5 fw-bold">Telecom Project Tracker</h1>
+    <p class="lead mt-3">A centralized platform for managing telecom construction projects from planning to invoicing.
+    </p>
+</div>
+
+<div class="container mt-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <h5>📍 Track Work Progress</h5>
+            <p>Monitor the status of telecom construction stages such as HLD, LLD, Implementation, DCR, and Invoice.</p>
+        </div>
+        <div class="col-md-4">
+            <h5>📂 Organized Documentation</h5>
+            <p>Store project details, deliverables, and approvals in one secure platform.</p>
+        </div>
+        <div class="col-md-4">
+            <h5>📊 Real-time Status</h5>
+            <p>Stay updated with accurate progress monitoring and reduce manual reporting.</p>
+        </div>
+    </div>
+</div>
+<div class="container mt-5 text-center">
+    <h3>Built for Telecom Construction Teams</h3>
+    <p>Streamline your workflow, reduce errors, and improve project visibility across all phases.</p>
+</div>
+<div class="text-center mt-4 mb-5">
+    <a href="{% url 'register' %}" class="btn btn-success btn-lg px-5">Get Started</a>
+</div>
+
+
+<center>
+    <footer class="footer fixed-bottom bg-light py-3">
+
+        <p>Copyright © 2025 JohnJabZ.<br>
+            All rights reserved.<br>
+            This Project Tracker and its associated content, structure, design, and source code are the
+            intellectual property of JohnJabZ.<br>
+            No part of this product may be reproduced, distributed, or modified without prior written permission.
+        </p>
+
+    </footer>
+</center>
+{% endif %}
+
+
+{% endblock %}

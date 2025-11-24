@@ -2,11 +2,39 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<div class="col-md-6 offset-md-3 text-center mt-5">
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Project Overview</h2>
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5>Total Projects</h5>
+                <h2>14</h2>
+            </div>
+        </div>
 
-    <h1>Hello World</h1>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5>Ongoing</h5>
+                <h2>8</h2>
+            </div>
+        </div>
 
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5>Completed</h5>
+                <h2>3</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5>Pending</h5>
+                <h2>3</h2>
+            </div>
+        </div>
+    </div>
 </div>
+
 {% else %}
 <div class="container text-center mt-5">
     <h1 class="display-5 fw-bold">Telecom Project Tracker</h1>
@@ -35,7 +63,7 @@
     <p>Streamline your workflow, reduce errors, and improve project visibility across all phases.</p>
 </div>
 <div class="text-center mt-4 mb-5">
-    <a href="{% url 'register' %}" class="btn btn-success btn-lg px-5">Get Started</a>
+    <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg px-5">Get Started</a>
 </div>
 
 
