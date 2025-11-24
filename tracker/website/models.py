@@ -10,7 +10,7 @@ class survey(models.Model):
     region = models.CharField(max_length=20, blank=True)
     project_type = models.CharField(max_length=20, blank=True)
     RITM = models.CharField(max_length=11)
-    target_area = models.IntegerField(blank=True)
+    target_area = models.IntegerField(blank=True, null=True)
     date_assigned = models.DateField()
     status = models.CharField(max_length=50)
     responsible = models.CharField(max_length=100)

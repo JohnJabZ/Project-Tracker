@@ -85,9 +85,9 @@ class AddSurveyForm(forms.ModelForm):
         attrs={"class": "form-control"}), label="Region")
     project_type = forms.CharField(required=True, widget=forms.widgets.TextInput(
         attrs={"class": "form-control"}), label="Project Type")
-    ritm = forms.CharField(required=True, widget=forms.widgets.TextInput(
+    RITM = forms.CharField(required=True, widget=forms.widgets.TextInput(
         attrs={"class": "form-control"}), label="RITM")
-    target_area = forms.IntegerField(required=True, widget=forms.widgets.NumberInput(
+    target_area = forms.IntegerField(required=False, widget=forms.widgets.NumberInput(
         attrs={"class": "form-control"}), label="Target Area")
     date_assigned = forms.DateField(required=True, widget=forms.widgets.DateInput(
         attrs={"type": "date", "class": "form-control"}), label="Date Assigned")
