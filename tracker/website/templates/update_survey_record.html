@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-6 offset-md-3 text-center mt-5">
+    <h1>Add Data</h1><br>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.cluster_name.label_tag }} {{ form.cluster_name }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.work_order.label_tag }} {{ form.work_order }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form.region.label_tag }} {{ form.region }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.project_type.label_tag }} {{ form.project_type }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form.RITM.label_tag }} {{ form.RITM }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.target_area.label_tag }} {{ form.target_area }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form.date_assigned.label_tag }} {{ form.date_assigned }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form.status.label_tag }} {{ form.status }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form.responsible.label_tag }} {{ form.responsible }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form.tools.label_tag }} {{ form.tools }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form.wo_status.label_tag }} {{ form.wo_status }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form.priority.label_tag }} {{ form.priority }}
+            </div>
+
+            <div class="col-md-12 mb-3">
+                {{ form.remarks.label_tag }} {{ form.remarks }}
+            </div>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-outline-primary">Update Record</button>
+        <a class="btn btn-outline-secondary" aria-current="page" href="{% url 'survey' %}">Back</a><br>
+    </form>
+
+
+</div>
+
+{% endblock %}

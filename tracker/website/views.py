@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, AddSurveyForm
 from .models import survey, design
+from django.contrib.contenttypes.models import ContentType
+from .models import ActivityLog
 
 # Create your views here.
 
@@ -119,3 +121,17 @@ def add_survey_record(request):
             print(form.errors)  # <-- this will show what’s wrong in the console
 
     return render(request, 'add_survey_record.html', {'form': form})
+
+
+def update_survey_record(request, pk):
+    if request.user.is_authenticated:
+        current_record = survey.objects.get(id=pk)
+        form = AddSurveyForm(request.POST or None, instance=current_record)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Data Updated Successfully!")
+            return redirect('survey')
+        return render(request, 'update_survey_record.html', {'form': form})
+    else:
+        messages.success(request, "You must be logged in to do that.")
+        return redirect('home')
