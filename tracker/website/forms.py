@@ -51,6 +51,7 @@ RESPONSIBLE_CHOICES = [
     ('Hajdyah', 'Hajdyah'),
     ('Mr. Harris', 'Mr. Harris'),
     ('Dawiyat', 'Dawiyat'),
+    ('Done', 'Done'),
 ]
 
 TOOLS_CHOICES = [
@@ -73,6 +74,7 @@ PRIORITY_CHOICES = [
     ('Urgent', 'Urgent'),
     ('High', 'High'),
     ('Low', 'Low'),
+    ('Done', 'Done'),
 ]
 
 

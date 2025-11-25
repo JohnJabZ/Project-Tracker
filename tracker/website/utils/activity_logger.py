@@ -1,5 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
-from .models import ActivityLog
+from website.models import ActivityLog
 
 
 def log_changes(request, instance, old_data, changed_fields):
