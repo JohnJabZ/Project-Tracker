@@ -140,7 +140,8 @@ def update_survey_record(request, pk):
     current_record = survey.objects.get(id=pk)
     old_data = current_record.__dict__.copy()
 
-    form = AddSurveyForm(request.POST or None, instance=current_record)
+    form = AddSurveyForm(request.POST or None,
+                         instance=current_record, is_update=True)
 
     if request.method == 'POST' and form.is_valid():
         updated_instance = form.save(commit=False)

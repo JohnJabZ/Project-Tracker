@@ -36,7 +36,7 @@ class survey(models.Model):
     wo_status = models.CharField(max_length=50)
     priority = models.CharField(max_length=20)
     remarks = models.TextField(blank=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -63,7 +63,7 @@ class design(models.Model):
     responsible = models.CharField(max_length=100)
     priority = models.CharField(max_length=20)
     remarks = models.TextField(blank=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.CharField(max_length=100)
 
     def __str__(self):

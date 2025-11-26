@@ -40,11 +40,14 @@ SURVEY_STATUS_CHOICES = [
     ('1 - Overlapping Clearance', '1 - Overlapping Clearance'),
     ('2 - Parceling Stage', '2 - Parceling Stage'),
     ('3 - GIS Post', '3 - GIS Post'),
-    ('4 - Survey tool Access', '5 - Survey tool Access'),
-    ('6 - Survey Stage', '6 - Survey Stage'),
-    ('7 - Cluster ID Acquisition', '7 - Cluster ID Acquisition'),
+    ('4 - Survey tool Access', '4 - Survey tool Access'),
+    ('5 - Survey Stage', '5 - Survey Stage'),
+    ('6 - Cluster ID Acquisition', '6 - Cluster ID Acquisition'),
+    ('7 - HLD Package Submission', '7 - HLD Package Submission'),
     ('8 - HLD Package Approval', '8 - HLD Package Approval'),
     ('9 - Completed', '9 - Completed'),
+    ('10 - For Cancellation', '10 - For Cancellation'),
+    ('11 - Cancelled', '11 - Cancelled'),
 ]
 
 RESPONSIBLE_CHOICES = [
@@ -138,3 +141,25 @@ class AddSurveyForm(forms.ModelForm):
         model = survey
         fields = '__all__'
         exclude = ('updated_by',)
+
+    def __init__(self, *args, **kwargs):
+        # Remove the custom argument so it doesn't reach BaseModelForm
+        is_update = kwargs.pop('is_update', False)
+        super().__init__(*args, **kwargs)
+
+        if is_update:
+            # Make fields read-only
+            readonly_fields = [
+                'work_order', 'region', 'project_type',
+                'RITM', 'target_area', 'date_assigned',
+                'responsible', 'wo_status',
+            ]
+            for field in readonly_fields:
+                self.fields[field].widget.attrs['readonly'] = True
+
+            # Status is editable
+            self.fields['status'].widget.attrs['class'] += ' editable-field'
+            self.fields['cluster_name'].widget.attrs['class'] += ' editable-field'
+            self.fields['remarks'].widget.attrs['class'] += ' editable-field'
+            self.fields['tools'].widget.attrs['class'] += ' editable-field'
+            self.fields['priority'].widget.attrs['class'] += ' editable-field'

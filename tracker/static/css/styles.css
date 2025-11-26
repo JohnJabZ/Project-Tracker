@@ -1,0 +1,67 @@
+/* WO Status */
+.wo-in-progress {
+    background-color: beige !important;
+}
+
+.wo-completed {
+    background-color: lightgreen !important;
+}
+
+.wo-cancelled {
+    background-color: #f28c8c !important;
+}
+
+/* Tools */
+.tools-pip-submission {
+    background-color: #f8d7da !important;
+}
+
+/* light red */
+.tools-pip-approval {
+    background-color: #cce5ff !important;
+}
+
+/* light blue */
+.tools-survey-submission {
+    background-color: beige !important;
+}
+
+.tools-survey-approval {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+/* blue */
+.tools-completed {
+    background-color: lightgreen !important;
+}
+
+.tools-for-cancellation {
+    background-color: orange !important;
+}
+
+.tools-cancelled {
+    background-color: red !important;
+    color: white !important;
+}
+
+/* Priority */
+.priority-urgent {
+    background-color: red !important;
+    color: white !important;
+}
+
+.priority-high {
+    background-color: orange !important;
+    color: white !important;
+}
+
+.priority-low {
+    background-color: gray !important;
+    color: white !important;
+}
+
+.priority-done {
+    background-color: green !important;
+    color: white !important;
+}

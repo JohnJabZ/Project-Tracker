@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load tz %}
 {% block content %}
 <div class="col-md-6 offset-md-3 text-center mt-5">
-    <h1>Add Data</h1><br>
+    <h1>Update Data</h1><br>
     <form method="POST" action="">
         {% csrf_token %}
         <div class="row">
@@ -58,6 +59,48 @@
         <button type="submit" class="btn btn-outline-primary">Update Record</button>
         <a class="btn btn-outline-secondary" aria-current="page" href="{% url 'survey' %}">Back</a><br>
     </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const statusField = document.getElementById("id_status");
+            const responsibleField = document.getElementById("id_responsible");
+            const woStatusField = document.getElementById("id_wo_status");
+            const toolsField = document.getElementById("id_tools");
+            const priorityField = document.getElementById("id_priority");
+
+            const statusMapping = {
+                "1 - Overlapping Clearance": { responsible: "Hajdyah", wo_status: "In Progress" },
+                "2 - Parceling Stage": { responsible: "Mr. Harris", wo_status: "In Progress" },
+                "3 - GIS Post": { responsible: "Dawiyat", wo_status: "In Progress" },
+                "4 - Survey tool Access": { responsible: "Dawiyat", wo_status: "In Progress" },
+                "5 - Survey Stage": { responsible: "Hajdyah", wo_status: "In Progress" },
+                "6 - Cluster ID Acquisition": { responsible: "Hajdyah", wo_status: "In Progress" },
+                "7 - HLD Package Submission": { responsible: "Mr. Harris", wo_status: "In Progress" },
+                "8 - HLD Package Approval": { responsible: "Dawiyat", wo_status: "In Progress" },
+                "9 - Completed": { responsible: "Done", tools: "5 - Completed", wo_status: "Completed", priority: "Done" },
+                "10 - For Cancellation": { responsible: "Hajdyah", tools: "6 - For Cancellation", wo_status: "In Progress", priority: "High" },
+                "11 - Cancelled": { responsible: "Done", tools: "7 - Cancelled", wo_status: "Cancelled", priority: "Done" }
+            };
+
+            function autoPopulateFields() {
+                const selectedStatus = statusField.value;
+                if (statusMapping[selectedStatus]) {
+                    const mapping = statusMapping[selectedStatus];
+
+                    responsibleField.value = mapping.responsible || responsibleField.value;
+                    woStatusField.value = mapping.wo_status || woStatusField.value;
+                    if (mapping.tools) toolsField.value = mapping.tools;
+                    if (mapping.priority) priorityField.value = mapping.priority;
+                }
+            }
+
+            statusField.addEventListener("change", autoPopulateFields);
+
+            // Trigger on page load in case a value is pre-selected
+            autoPopulateFields();
+        });
+    </script>
+
     <br><br>
     <!-- Collapsible Logs Section -->
     <div class="container mt-4">
@@ -69,20 +112,21 @@
         <div class="collapse" id="activityLogs">
             <div class="card card-body">
                 <h5>Activity Logs</h5>
+
                 <table class="table table-striped table-sm">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>User</th>
-                            <th>Action</th>
+                            <th>Details</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for log in logs %}
                         <tr>
-                            <td>{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
+                            <td>{{ log.timestamp|localtime|date:"Y-m-d h:i A" }}</td>
                             <td>{{ log.user }}</td>
-                            <td>{{ log.action }}</td>
+                            <td style="white-space: pre-line;">{{ log.action }}</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -96,6 +140,4 @@
     </div>
 
 
-</div>
-
-{% endblock %}
+    {% endblock %}
