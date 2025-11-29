@@ -248,19 +248,23 @@ def update_survey_record(request, pk):
     if request.method == 'POST' and form.is_valid():
         updated_instance = form.save(commit=False)
 
-        # detect changes
+        # Define the fields to check for changes
+        fields_to_check = ['status', 'responsible',
+                           'wo_status', 'tools', 'priority', 'remarks']
+
         changed_fields = []
-        for field in form.changed_data:
+        for field in fields_to_check:
             old_value = old_data.get(field)
             new_value = getattr(updated_instance, field)
-            if old_value != new_value:
+            # Convert to string to avoid false negatives (especially for User or Choice fields)
+            if str(old_value) != str(new_value):
                 changed_fields.append(field)
 
-        # save record first
+        # Save updated record
         updated_instance.updated_by = request.user
         updated_instance.save()
 
-        # log the changes using the reusable utility
+        # Log changes
         if changed_fields:
             log_changes(request, updated_instance, old_data, changed_fields)
 
@@ -273,8 +277,11 @@ def update_survey_record(request, pk):
         object_id=current_record.id
     ).order_by('-timestamp')
 
-    return render(request, 'update_survey_record.html',
-                  {'form': form, 'record': current_record, 'logs': logs})
+    return render(request, 'update_survey_record.html', {
+        'form': form,
+        'record': current_record,
+        'logs': logs
+    })
 
 
 def export_survey_data(request):
