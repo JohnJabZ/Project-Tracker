@@ -8,7 +8,7 @@
     .table-container {
         max-height: 70vh;
         overflow-y: auto;
-        border: 1px solid #ddd;
+        border: 2px solid #ddd;
     }
 
     /* Required for sticky header to align correctly */
@@ -27,12 +27,56 @@
         color: white !important;
     }
 </style>
-
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mt-4">
         <h1 class="fw-bold">Survey List</h1>
-        <a class="btn btn-primary px-4" href="{% url 'add_survey_record' %}">+ Add Site</a>
+
+        <div>
+            {% if user.is_superuser %}
+            <button class="btn btn-success px-4 me-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                📥 Import
+            </button>
+
+            {% endif %}
+            <a class="btn btn-warning px-4 me-2" href="{% url 'export_survey_csv' %}">
+                📤 Export CSV
+            </a>
+
+            <a class="btn btn-info px-4 me-2" href="{% url 'export_survey_excel' %}">
+                📄 Export Excel
+            </a>
+
+            <a class="btn btn-primary px-4" href="#">
+                + Add Site
+            </a>
+        </div>
     </div>
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'import_survey' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importModalLabel">Import Survey Data</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <label>Select CSV or Excel file:</label>
+                        <input type="file" name="file" class="form-control" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="input-group my-3">
         <span class="input-group-text bg-dark text-white"><i class="bi bi-search"></i></span>
@@ -124,7 +168,6 @@
         </table>
     </div>
 </div>
-
 
 
 {% else %}

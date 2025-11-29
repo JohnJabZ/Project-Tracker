@@ -1,3 +1,4 @@
+from openpyxl import Workbook
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -6,6 +7,12 @@ from .models import survey, design
 from django.contrib.contenttypes.models import ContentType
 from .models import ActivityLog
 from .utils.activity_logger import log_changes
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+import csv
+import pandas as pd
+import numpy as np
+
 
 # Create your views here.
 
@@ -63,7 +70,7 @@ def register_user(request):
 
 
 def survey_list(request):
-    surveys = survey.objects.all()
+    surveys = survey.objects.all().order_by('tools')
     # check to see if logging in
     if request.method == 'POST':
         username = request.POST['username']
@@ -173,3 +180,173 @@ def update_survey_record(request, pk):
 
     return render(request, 'update_survey_record.html',
                   {'form': form, 'record': current_record, 'logs': logs})
+
+
+def export_survey_data(request):
+    # Create HTTP response with CSV header
+    response = HttpResponse(
+        content_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="survey_export.csv"'},
+    )
+
+    writer = csv.writer(response)
+
+    # Write column headers
+    writer.writerow([
+        "Cluster Name", "Work Order", "Project Type", "Region",
+        "RITM", "Target Area", "Assigned Date", "Status", "Responsible",
+        "Tools Stage", "Tools WO Status", "Priority", "Remarks",
+        "Updated At", "Updated By"
+    ])
+
+    # Write row data
+    for s in survey.objects.all():
+        writer.writerow([
+            s.cluster_name,
+            s.work_order,
+            s.project_type,
+            s.region,
+            s.RITM,
+            s.target_area,
+            s.date_assigned,
+            s.status,
+            s.responsible,
+            s.tools,
+            s.wo_status,
+            s.priority,
+            s.remarks,
+            s.updated_at,
+            s.updated_by.username if s.updated_by else "",
+        ])
+
+    return response
+
+
+def export_survey_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Survey Data"
+
+    ws.append([
+        "Cluster Name", "Work Order", "Project Type", "Region",
+        "RITM", "Target Area", "Assigned Date", "Status", "Responsible",
+        "Tools Stage", "Tools WO Status", "Priority", "Remarks",
+        "Updated At", "Updated By"
+    ])
+
+    for s in survey.objects.all():
+        updated_at_value = s.updated_at
+
+        # Convert timezone-aware datetime to naive
+        if updated_at_value and hasattr(updated_at_value, "tzinfo") and updated_at_value.tzinfo:
+            updated_at_value = updated_at_value.replace(tzinfo=None)
+
+        ws.append([
+            s.cluster_name,
+            s.work_order,
+            s.project_type,
+            s.region,
+            s.RITM,
+            s.target_area,
+            s.date_assigned,
+            s.status,
+            s.responsible,
+            s.tools,
+            s.wo_status,
+            s.priority,
+            s.remarks,
+            updated_at_value,
+            s.updated_by.username if s.updated_by else "",
+        ])
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = 'attachment; filename="survey_export.xlsx"'
+    wb.save(response)
+    return response
+
+
+def import_survey_view(request):
+    if request.method == "POST":
+        file = request.FILES.get("file")
+
+        if not file:
+            messages.error(request, "No file selected.")
+            return redirect("survey")
+
+        try:
+            # Detect file type
+            if file.name.endswith(".csv"):
+                df = pd.read_csv(file)
+            else:
+                df = pd.read_excel(file)
+
+            # Remove trailing spaces from headings
+            df.columns = [col.strip() for col in df.columns]
+
+            # Replace NaN with None
+            df = df.replace({np.nan: None})
+
+            if "Work Order" not in df.columns:
+                messages.error(
+                    request, "Invalid file: 'Work Order' column missing.")
+                return redirect("survey")
+
+            existing_wos = set(
+                survey.objects.values_list("work_order", flat=True))
+            duplicates_skipped = []
+
+            for _, row in df.iterrows():
+                wo = row.get("Work Order")
+
+                if not wo:
+                    continue
+
+                wo = str(wo).strip()
+
+                if wo in existing_wos:
+                    duplicates_skipped.append(str(wo))
+                    continue
+
+                assigned_date = pd.to_datetime(
+                    row.get("Assigned Date"), errors="coerce")
+                if assigned_date and not pd.isna(assigned_date):
+                    assigned_date = assigned_date.date()
+                else:
+                    assigned_date = None
+
+                updated_by_user = None
+                if row.get("Updated By"):
+                    updated_by_user = User.objects.filter(
+                        username=row["Updated By"]
+                    ).first()
+
+                survey.objects.create(
+                    cluster_name=row.get("Cluster Name") or "",
+                    work_order=wo,
+                    project_type=row.get("Project Type") or "",
+                    region=row.get("Region") or "",
+                    RITM=row.get("RITM") or "",
+                    target_area=row.get("Target Area") or "",
+                    date_assigned=assigned_date,
+                    status=row.get("Status") or "",
+                    responsible=row.get("Responsible") or "",
+                    tools=row.get("Tools Stage") or "",
+                    wo_status=row.get("Tools WO Status") or "",
+                    priority=row.get("Priority") or "",
+                    remarks=row.get("Remarks") or "",
+                    updated_by=updated_by_user,
+                    updated_at=row.get("Updated At"),
+                )
+
+            messages.success(request, "Survey data imported successfully!")
+
+            if duplicates_skipped:
+                messages.warning(
+                    request, f"Skipped duplicates: {', '.join(duplicates_skipped)}")
+
+        except Exception as e:
+            messages.error(request, f"Error processing file: {e}")
+
+        return redirect("survey")

@@ -19,7 +19,7 @@ def parse_date(value):
 
 
 class Command(BaseCommand):
-    help = "Import survey data from CSV or Excel"
+    help = "Import survey data from CSV or Excel and skip duplicate work orders in the database"
 
     def add_arguments(self, parser):
         parser.add_argument("file_path", type=str)
@@ -35,12 +35,35 @@ class Command(BaseCommand):
 
         df.columns = [col.strip() for col in df.columns]
 
+        # Normalize work order values
+        if "Work Order" not in df.columns:
+            self.stdout.write(self.style.ERROR(
+                "ERROR: 'Work Order' column is missing"))
+            return
+
+        df["Work Order"] = df["Work Order"].astype(str).str.strip()
+
+        # Get existing work orders from DB once
+        existing_wos = set(
+            survey.objects.values_list("work_order", flat=True)
+        )
+
+        # Track duplicates found in DB
+        duplicates_skipped = []
+
+        # Process each row
         for _, row in df.iterrows():
 
-            assigned_date = parse_date(row.get("Assigned Date"))
+            wo = clean_value(row.get("Work Order"))
 
+            # Skip if work order already exists in DB
+            if wo in existing_wos:
+                duplicates_skipped.append(wo)
+                continue
+
+            assigned_date = parse_date(row.get("Assigned Date"))
             if assigned_date is None:
-                continue  # skip rows missing mandatory date
+                continue  # Mandatory field missing, skip row
 
             updated_by_user = None
             if pd.notna(row.get("Updated By", None)):
@@ -50,7 +73,7 @@ class Command(BaseCommand):
 
             survey.objects.create(
                 cluster_name=clean_value(row.get("Cluster Name")),
-                work_order=clean_value(row.get("Work Order")),
+                work_order=wo,
                 project_type=clean_value(row.get("Project Type")),
                 region=clean_value(row.get("Region")),
                 RITM=clean_value(row.get("RITM")),
@@ -67,5 +90,19 @@ class Command(BaseCommand):
                 updated_at=parse_date(row.get("Updated At")),
             )
 
+        # Final success message
         self.stdout.write(self.style.SUCCESS(
             "Survey data imported successfully!"))
+
+        # Inform user about excluded duplicates
+        if duplicates_skipped:
+            duplicates_str = ", ".join(duplicates_skipped)
+            self.stdout.write(
+                self.style.WARNING(
+                    f"Duplicate work orders found and excluded: {duplicates_str}"
+                )
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS("No duplicate work orders found.")
+            )

@@ -13,4 +13,9 @@ urlpatterns = [
     path('add_survey_record/', views.add_survey_record, name='add_survey_record'),
     path('update_survey_record/<int:pk>', views.update_survey_record,
          name='update_survey_record'),
+    path("survey/export/", views.export_survey_data, name="export_survey_csv"),
+    path("survey/export/excel/", views.export_survey_excel,
+         name="export_survey_excel"),
+    path("survey/import/", views.import_survey_view, name="import_survey"),
+
 ]
