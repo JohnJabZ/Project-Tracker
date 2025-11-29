@@ -18,6 +18,51 @@ import numpy as np
 
 
 def home(request):
+    # Count all records
+    total = survey.objects.count()
+
+    # Breakdowns by tools field
+    overlapping = survey.objects.filter(
+        status__icontains="1 - Overlapping Clearance").count()
+    parceling = survey.objects.filter(
+        status__icontains="2 - Parceling Stage").count()
+    gis_post = survey.objects.filter(status__icontains="3 - GIS Post").count()
+    tool_access = survey.objects.filter(
+        status__icontains="4 - Survey tool Access").count()
+    survey_stage = survey.objects.filter(
+        status__icontains="5 - Survey Stage").count()
+    cluster_id = survey.objects.filter(
+        status__icontains="6 - Cluster ID Acquisition").count()
+    hld_submission = survey.objects.filter(
+        status__icontains="7 - HLD Package Submission").count()
+    hld_approval = survey.objects.filter(
+        status__icontains="8 - HLD Package Approval").count()
+    completed = survey.objects.filter(
+        status__icontains="9 - Completed").count()
+    for_cancellation = survey.objects.filter(
+        status__icontains="10 - For Cancellation").count()
+    cancelled = survey.objects.filter(
+        status__icontains="11 - Cancelled").count()
+
+    context = {
+        "total": total,
+        "overlapping": overlapping,
+        "parceling": parceling,
+        "gis_post": gis_post,
+        "tool_access": tool_access,
+        "survey_stage": survey_stage,
+        "cluster_id": cluster_id,
+        "hld_submission": hld_submission,
+        "hld_approval": hld_approval,
+        "completed": completed,
+        "for_cancellation": for_cancellation,
+        "cancelled": cancelled,
+    }
+
+    return render(request, "home.html", context)
+
+
+def dashboard_design(request):
     # check to see if logging in
     if request.method == 'POST':
         username = request.POST['username']
@@ -33,7 +78,45 @@ def home(request):
                 request, "Username does not Exist, Please register for an account.")
             return redirect('home')
     else:
-        return render(request, 'home.html', {})
+        return render(request, 'dashboard_design.html', {})
+
+
+def dashboard_asbuilt(request):
+    # check to see if logging in
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        # Authenticate
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You have logged in!")
+            return redirect('home')
+        else:
+            messages.error(
+                request, "Username does not Exist, Please register for an account.")
+            return redirect('home')
+    else:
+        return render(request, 'dashboard_asbuilt.html', {})
+
+
+def dashboard_sor(request):
+    # check to see if logging in
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        # Authenticate
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You have logged in!")
+            return redirect('home')
+        else:
+            messages.error(
+                request, "Username does not Exist, Please register for an account.")
+            return redirect('home')
+    else:
+        return render(request, 'dashboard_sor.html', {})
 
 
 def login_user(request):

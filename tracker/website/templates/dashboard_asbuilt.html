@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container mt-5">
+    <div class="card shadow p-3 mb-4">
+        <h2 class="text-center mb-4">Asbuilts Overview</h2>
+        <div class="row text-center">
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h5>Total Projects</h5>
+                    <h2>{{ total }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h5>Ongoing</h5>
+                    <h2>{{ ongoing }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h5>Completed</h5>
+                    <h2>{{ completed }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h5>Pending</h5>
+                    <h2>{{ pending }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="card shadow p-4">
+        <h4 class="text-center">Project Status Breakdown</h4>
+        <canvas id="statusPieChart" style="max-height: 300px;"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('statusPieChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Ongoing', 'Completed', 'Pending'],
+            datasets: [{
+                data: [{{ ongoing }}, {{ completed }}, {{ pending }}],
+        backgroundColor: [
+        'rgba(255, 206, 86)',   // yellow-ish
+        'rgba(75, 192, 192)',   // green
+        'rgba(255, 99, 132)'    // red
+    ]
+        }]
+    },
+        options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' }
+        }
+    }
+});
+</script>
+
+{% else %}
+<div class="container text-center mt-5">
+    <h1 class="display-5 fw-bold">Telecom Project Tracker</h1>
+    <p class="lead mt-3">A centralized platform for managing telecom construction projects from planning to invoicing.
+    </p>
+</div>
+
+<div class="container mt-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <h5>📍 Track Work Progress</h5>
+            <p>Monitor the status of telecom construction stages such as HLD, LLD, Implementation, DCR, and Invoice.</p>
+        </div>
+        <div class="col-md-4">
+            <h5>📂 Organized Documentation</h5>
+            <p>Store project details, deliverables, and approvals in one secure platform.</p>
+        </div>
+        <div class="col-md-4">
+            <h5>📊 Real-time Status</h5>
+            <p>Stay updated with accurate progress monitoring and reduce manual reporting.</p>
+        </div>
+    </div>
+</div>
+<div class="container mt-5 text-center">
+    <h3>Built for Telecom Construction Teams</h3>
+    <p>Streamline your workflow, reduce errors, and improve project visibility across all phases.</p>
+</div>
+<div class="text-center mt-4 mb-5">
+    <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg px-5">Get Started</a>
+</div>
+
+
+<center>
+    <footer class="footer fixed-bottom bg-light py-3">
+
+        <p>Copyright © 2025 JohnJabZ.<br>
+            All rights reserved.<br>
+            This Project Tracker and its associated content, structure, design, and source code are the
+            intellectual property of JohnJabZ.<br>
+            No part of this product may be reproduced, distributed, or modified without prior written permission.
+        </p>
+
+    </footer>
+</center>
+{% endif %}
+
+
+{% endblock %}
