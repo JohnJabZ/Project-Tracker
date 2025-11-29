@@ -4,7 +4,7 @@
 <div class="col-md-4 container mt-4">
     <div class="col-md-6 offset-md-3 text-center mt-5">
         <br><br><br><br><br><br><br><br>
-        <form method="POST" action="{% url 'home' %}">
+        <form method="POST" action="{% url 'login' %}">
             {% csrf_token %}
             <div class="mb-3">
                 <input type="text" class="form-control" name="username" placeholder="Username" required>

@@ -3,9 +3,6 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('dashboard_design', views.dashboard_design, name='dashboard_design'),
-    path('dashboard_asbuilt', views.dashboard_asbuilt, name='dashboard_asbuilt'),
-    path('dashboard_sor', views.dashboard_sor, name='dashboard_sor'),
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('register/', views.register_user, name='register'),
@@ -20,5 +17,8 @@ urlpatterns = [
     path("survey/export/excel/", views.export_survey_excel,
          name="export_survey_excel"),
     path("survey/import/", views.import_survey_view, name="import_survey"),
+    path('dashboard_design', views.dashboard_design, name='dashboard_design'),
+    path('dashboard_asbuilt', views.dashboard_asbuilt, name='dashboard_asbuilt'),
+    path('dashboard_sor', views.dashboard_sor, name='dashboard_sor'),
 
 ]
