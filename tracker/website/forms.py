@@ -152,7 +152,7 @@ class AddSurveyForm(forms.ModelForm):
             readonly_fields = [
                 'work_order', 'region', 'project_type',
                 'RITM', 'target_area', 'date_assigned',
-                'responsible', 'wo_status',
+                'responsible',
             ]
             for field in readonly_fields:
                 self.fields[field].widget.attrs['readonly'] = True
@@ -163,3 +163,4 @@ class AddSurveyForm(forms.ModelForm):
             self.fields['remarks'].widget.attrs['class'] += ' editable-field'
             self.fields['tools'].widget.attrs['class'] += ' editable-field'
             self.fields['priority'].widget.attrs['class'] += ' editable-field'
+            self.fields['wo_status'].widget.attrs['class'] += ' editable-field'

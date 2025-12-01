@@ -10,84 +10,84 @@
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h5>Total Projects</h5>
-                    <h2>{{ total }}</h2>
+                    <h2><a href="#"></a>{{ total }}</h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>Overlapping Clearance</h6>
-                    <h2>{{ overlapping }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'overlapping' %}">{{ overlapping }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>Parceling Stage</h6>
-                    <h2>{{ parceling }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'parceling' %}">{{ parceling }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>GIS Post</h6>
-                    <h2>{{ gis_post }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'gis_post' %}">{{ gis_post }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>Survey Tool Access</h6>
-                    <h2>{{ tool_access }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'tool_access' %}">{{ tool_access }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>Survey Stage</h6>
-                    <h2>{{ survey_stage }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'survey_stage' %}">{{ survey_stage }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>Cluster ID Acquisition</h6>
-                    <h2>{{ cluster_id }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'cluster_id' %}">{{ cluster_id }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>HLD Submission</h6>
-                    <h2>{{ hld_submission }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'hld_submission' %}">{{ hld_submission }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>HLD Approval</h6>
-                    <h2>{{ hld_approval }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'hld_approval' %}">{{ hld_approval }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>Completed</h6>
-                    <h2>{{ completed }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'completed' %}">{{ completed }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>For Cancellation</h6>
-                    <h2>{{ for_cancellation }}</h2>
+                    <h2><a href="{% url 'survey_filter' 'for_cancellation' %}">{{ for_cancellation }}</a></h2>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm p-3">
                     <h6>Cancelled</h6>
-                    <h2>{{ cancelled }}</h2>
+                    <h2><a href="{% url 'survey_filter' '{{ cancelled }}' %}">{{ cancelled }}</a></h2>
                 </div>
             </div>
 

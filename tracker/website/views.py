@@ -240,7 +240,12 @@ def update_survey_record(request, pk):
         return redirect('home')
 
     current_record = survey.objects.get(id=pk)
-    old_data = current_record.__dict__.copy()
+
+    fields_to_check = ['status',
+                       'wo_status', 'tools', 'priority', 'remarks']
+
+    old_data = {field: getattr(current_record, field)
+                for field in fields_to_check}
 
     form = AddSurveyForm(request.POST or None,
                          instance=current_record, is_update=True)
@@ -248,30 +253,22 @@ def update_survey_record(request, pk):
     if request.method == 'POST' and form.is_valid():
         updated_instance = form.save(commit=False)
 
-        # Define the fields to check for changes
-        fields_to_check = ['status', 'responsible',
-                           'wo_status', 'tools', 'priority', 'remarks']
+        changed_fields = [
+            field for field in fields_to_check
+            if str(old_data[field]) != str(getattr(updated_instance, field))
+        ]
 
-        changed_fields = []
-        for field in fields_to_check:
-            old_value = old_data.get(field)
-            new_value = getattr(updated_instance, field)
-            # Convert to string to avoid false negatives (especially for User or Choice fields)
-            if str(old_value) != str(new_value):
-                changed_fields.append(field)
-
-        # Save updated record
         updated_instance.updated_by = request.user
         updated_instance.save()
 
-        # Log changes
         if changed_fields:
             log_changes(request, updated_instance, old_data, changed_fields)
+        else:
+            print("No fields changed")  # Debug only
 
         messages.success(request, "Data Updated Successfully!")
         return redirect('update_survey_record', pk=current_record.id)
 
-    # Fetch logs for this record
     logs = ActivityLog.objects.filter(
         content_type=ContentType.objects.get_for_model(survey),
         object_id=current_record.id
@@ -452,3 +449,25 @@ def import_survey_view(request):
             messages.error(request, f"Error processing file: {e}")
 
         return redirect("survey")
+
+
+def survey_filter(request, filter_type):
+    if filter_type == "overlapping":
+        items = survey.objects.filter(status__icontains="Clearance")
+        title = "Overlapping Clearance"
+    elif filter_type == "parceling":
+        items = survey.objects.filter(status__icontains="2 - Parceling Stage")
+        title = "Parceling Stage"
+    elif filter_type == "gis_post":
+        items = survey.objects.filter(status__icontains="3 - GIS Post")
+        title = "GIS Post"
+    else:
+        items = survey.objects.none()
+        title = "Unknown Filter"
+
+    context = {
+        "items": items,
+        "title": title,
+        "count": items.count(),
+    }
+    return render(request, "survey_filter.html", context)

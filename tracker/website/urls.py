@@ -20,5 +20,7 @@ urlpatterns = [
     path('dashboard_design', views.dashboard_design, name='dashboard_design'),
     path('dashboard_asbuilt', views.dashboard_asbuilt, name='dashboard_asbuilt'),
     path('dashboard_sor', views.dashboard_sor, name='dashboard_sor'),
+    path('survey/filter/<str:filter_type>/',
+         views.survey_filter, name='survey_filter'),
 
 ]

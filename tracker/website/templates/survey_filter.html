@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load tz %}
+{% block content %}
+{% if user.is_authenticated %}
+{% load static %}
+<style>
+    .table-container {
+        max-height: 70vh;
+        overflow-y: auto;
+        border: 2px solid #ddd;
+    }
+
+    /* Required for sticky header to align correctly */
+    .table-container table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    /* Sticky header */
+    .sticky-header th {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        /* must be higher than table body */
+        background: #212529 !important;
+        color: white !important;
+    }
+</style>
+<div class="table-container mt-6 p-5">
+    <h2 class="text-center">{{ title }} ({{ count }})</h2>
+    <a href="{% url 'home' %}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+
+    <table class="table text-center table-striped table-hover table-bordered table-sm">
+        <thead class="table-dark sticky-header">
+            <tr>
+                <th>Cluster Name</th>
+                <th>Work Order</th>
+                <th>Project Type</th>
+                <th>Region</th>
+                <th>RITM</th>
+                <th>Target Area</th>
+                <th>Assigned Date</th>
+                <th>Status</th>
+                <th>Responsible</th>
+                <th>Tools Stage</th>
+                <th>Tools WO Status</th>
+                <th>Priority</th>
+                <th>Remarks</th>
+                <th>Updated At</th>
+                <th>Updated By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in items %}
+            <tr>
+                <td>{{ row.cluster_name }}</td>
+                <td>{{ row.work_order }}</td>
+                <td>{{ row.project_type }}</td>
+                <td>{{ row.region }}</td>
+                <td>{{ row.RITM }}</td>
+                <td>{{ row.target_area }}</td>
+                <td>{{ row.date_assigned }}</td>
+                <td>{{ row.status }}</td>
+                <td>{{ row.responsible }}</td>
+                <td>{{ row.tools }}</td>
+                <td>{{ row.wo_status }}</td>
+                <td>{{ row.priority }}</td>
+                <td>{{ row.remarks }}</td>
+                <td>{{ row.updated_at }}</td>
+                <td>{{ row.updated_by }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No Records Found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
