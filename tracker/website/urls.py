@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', views.home, name='home'),  # I made Survey Dashboard as Default
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('register/', views.register_user, name='register'),
@@ -38,4 +38,8 @@ urlpatterns = [
          views.delete_design_record, name='delete_design_record'),
     path('design/filter/<str:filter_type>/',
          views.design_filter, name='design_filter'),
+    path('design/export/', views.export_design_csv, name="export_design_csv"),
+    path('design/export/excel/', views.export_design_excel,
+         name="export_design_excel"),
+    path('design/import/', views.import_design_view, name="import_design"),
 ]

@@ -693,3 +693,188 @@ def design_filter(request, filter_type):
     }
 
     return render(request, "design_filter.html", context)
+
+
+def export_design_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Survey Data"
+
+    ws.append([
+        "District Name", "Cluster Name", "Work Order", "Scope of Work", "SubClass", "Project Type", "Year",
+        "RITM #", "Region", "Target Area", "Assigned Date", "Design Type", "Status", "Tools Stage",
+        "Tools WO Status", "Responsible", "Priority", "Remarks",
+        "Updated At", "Updated By"
+    ])
+
+    for s in design.objects.all():
+        updated_at_value = s.updated_at
+
+        # Convert timezone-aware datetime to naive
+        if updated_at_value and hasattr(updated_at_value, "tzinfo") and updated_at_value.tzinfo:
+            updated_at_value = updated_at_value.replace(tzinfo=None)
+
+        ws.append([
+            s.district_name,
+            s.cluster_name,
+            s.work_order,
+            s.scope_work,
+            s.subclass,
+            s.project_type,
+            s.year,
+            s.RITM,
+            s.region,
+            s.target_area,
+            s.date_assigned,
+            s.design_type,
+            s.status,
+            s.tools,
+            s.wo_status,
+            s.responsible,
+            s.priority,
+            s.remarks,
+            updated_at_value,
+            s.updated_by.username if s.updated_by else "",
+        ])
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = 'attachment; filename="design_export.xlsx"'
+    wb.save(response)
+    return response
+
+
+def export_design_csv(request):
+    # Create HTTP response with CSV header
+    response = HttpResponse(
+        content_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="design_export.csv"'},
+    )
+
+    writer = csv.writer(response)
+
+    # Write column headers
+    writer.writerow([
+        "District Name", "Cluster Name", "Work Order", "Scope of Work", "SubClass", "Project Type", "Year",
+        "RITM #", "Region", "Target Area", "Assigned Date", "Design Type", "Status", "Tools Stage",
+        "Tools WO Status", "Responsible", "Priority", "Remarks",
+        "Updated At", "Updated By"
+    ])
+
+    # Write row data
+    for s in design.objects.all():
+        writer.writerow([
+            s.district_name,
+            s.cluster_name,
+            s.work_order,
+            s.scope_work,
+            s.subclass,
+            s.project_type,
+            s.year,
+            s.RITM,
+            s.region,
+            s.target_area,
+            s.date_assigned,
+            s.design_type,
+            s.status,
+            s.tools,
+            s.wo_status,
+            s.responsible,
+            s.priority,
+            s.remarks,
+            s.updated_at,
+            s.updated_by.username if s.updated_by else "",
+        ])
+
+    return response
+
+
+def import_design_view(request):
+    if request.method == "POST":
+        file = request.FILES.get("file")
+
+        if not file:
+            messages.error(request, "No file selected.")
+            return redirect("design")
+
+        try:
+            # Detect file type
+            if file.name.endswith(".csv"):
+                df = pd.read_csv(file)
+            else:
+                df = pd.read_excel(file)
+
+            # Remove trailing spaces from headings
+            df.columns = [col.strip() for col in df.columns]
+
+            # Replace NaN with None
+            df = df.replace({np.nan: None})
+
+            if "Work Order" not in df.columns:
+                messages.error(
+                    request, "Invalid file: 'Work Order' column missing.")
+                return redirect("design")
+
+            existing_wos = set(
+                design.objects.values_list("work_order", flat=True))
+            duplicates_skipped = []
+
+            for _, row in df.iterrows():
+                wo = row.get("Work Order")
+
+                if not wo:
+                    continue
+
+                wo = str(wo).strip()
+
+                if wo in existing_wos:
+                    duplicates_skipped.append(str(wo))
+                    continue
+
+                assigned_date = pd.to_datetime(
+                    row.get("Assigned Date"), errors="coerce")
+                if assigned_date and not pd.isna(assigned_date):
+                    assigned_date = assigned_date.date()
+                else:
+                    assigned_date = None
+
+                updated_by_user = None
+                if row.get("Updated By"):
+                    updated_by_user = User.objects.filter(
+                        username=row["Updated By"]
+                    ).first()
+
+                design.objects.create(
+                    district_name=row.get("District Name") or "",
+                    cluster_name=row.get("Cluster Name") or "",
+                    work_order=wo,
+                    scope_work=row.get("Scope of Work") or "",
+                    subclass=row.get("SubClass") or "",
+                    project_type=row.get("Project Type") or "",
+                    year=row.get("Year") or "",
+                    RITM=row.get("RITM #") or "",
+                    region=row.get("Region") or "",
+                    target_area=row.get("Target Area") or "",
+                    date_assigned=assigned_date,
+                    design_type=row.get("Design Type") or "",
+                    status=row.get("Status") or "",
+                    tools=row.get("Tools Stage") or "",
+                    wo_status=row.get("Tools WO Status") or "",
+                    responsible=row.get("Responsible") or "",
+                    priority=row.get("Priority") or "",
+                    remarks=row.get("Remarks") or "",
+                    updated_by=updated_by_user,
+                    updated_at=row.get("Updated At"),
+                )
+
+            messages.success(request, "Design data imported successfully!")
+
+            if duplicates_skipped:
+                messages.warning(
+                    request, f"Skipped duplicates: {', '.join(duplicates_skipped)}")
+
+        except Exception as e:
+            messages.error(request, f"Error processing file: {e}")
+
+        return redirect("design")
