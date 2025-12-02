@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load tz %}
+{% block content %}
+
+{% if user.is_authenticated %}
+{% load static %}
+
+<style>
+    .table-container {
+        max-height: 70vh;
+        overflow-y: auto;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+    }
+
+    .table-container table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .sticky-header th {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: #212529 !important;
+        color: white !important;
+        font-size: 13px;
+        text-transform: uppercase;
+    }
+
+    .column-filter {
+        width: 100%;
+        padding: 4px;
+        font-size: 11px;
+        border-radius: 4px;
+        margin-top: 4px;
+    }
+
+    .header-buttons .btn {
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+    /* Hover styling */
+    tbody tr:hover {
+        background-color: #f5f7ff !important;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container-fluid px-4 mt-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">📍 Design Records</h2>
+
+        <div class="header-buttons">
+            {% if user.is_superuser %}
+            <button class="btn btn-success px-3 me-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                📥 Import
+            </button>
+            {% endif %}
+
+            <a class="btn btn-warning px-3 me-2" href="#">📤 Export CSV</a>
+            <a class="btn btn-info px-3 me-2" href="#">📄 Export Excel</a>
+            <a class="btn btn-primary px-3" href="{% url 'add_design_record' %}">
+                ➕ Add Site
+            </a>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="input-group mb-3">
+        <span class="input-group-text bg-dark text-white"><i class="bi bi-search"></i></span>
+        <input id="searchInput" type="search" class="form-control form-control-lg" placeholder="Search any field...">
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table class="table table-hover table-bordered table-sm text-center align-middle">
+            <thead class="table-dark sticky-header">
+                <tr>
+                    <th>District<input class="column-filter" data-col="0" type="text"></th>
+                    <th>Cluster<input class="column-filter" data-col="1" type="text"></th>
+                    <th>Work Order<input class="column-filter" data-col="2" type="text"></th>
+                    <th>Scope<input class="column-filter" data-col="3" type="text"></th>
+                    <th>Subclass<input class="column-filter" data-col="4" type="text"></th>
+                    <th>Project<input class="column-filter" data-col="5" type="text"></th>
+                    <th>Year<input class="column-filter" data-col="6" type="text"></th>
+                    <th>RITM<input class="column-filter" data-col="7" type="text"></th>
+                    <th>Region<input class="column-filter" data-col="8" type="text"></th>
+                    <th>Target<input class="column-filter" data-col="9" type="text"></th>
+                    <th>Assigned<input class="column-filter" data-col="10" type="text"></th>
+                    <th>Type<input class="column-filter" data-col="11" type="text"></th>
+                    <th>Status<input class="column-filter" data-col="12" type="text"></th>
+                    <th>Stage<input class="column-filter" data-col="13" type="text"></th>
+                    <th>WO<input class="column-filter" data-col="14" type="text"></th>
+                    <th>Responsible<input class="column-filter" data-col="15" type="text"></th>
+                    <th>Priority<input class="column-filter" data-col="16" type="text"></th>
+                    <th>Remarks<input class="column-filter" data-col="17" type="text"></th>
+                    <th>Updated<input class="column-filter" data-col="18" type="text"></th>
+                    <th>By<input class="column-filter" data-col="19" type="text"></th>
+                </tr>
+            </thead>
+
+            <tbody id="surveyTable">
+                {% for design in designs %}
+                <tr>
+                    <td>{{ design.district_name }}</td>
+                    <td>{{ design.cluster_name }}</td>
+                    <td>
+                        <a href="{% url 'design_detail' design.id %}" class="fw-bold text-primary text-decoration-none">
+                            {{ design.work_order }}
+                        </a>
+                    </td>
+                    <td>{{ design.scope_work }}</td>
+                    <td>{{ design.subclass }}</td>
+                    <td>{{ design.project_type }}</td>
+                    <td>{{ design.year }}</td>
+                    <td>{{ design.RITM }}</td>
+                    <td>{{ design.region }}</td>
+                    <td>{{ design.target_area }}</td>
+                    <td>{{ design.date_assigned }}</td>
+                    <td>{{ design.design_type }}</td>
+
+                    <!-- STATUS -->
+                    <td class="
+                        {% if design.status == 'In Progress' %}wo-in-progress
+                        {% elif design.status == 'Completed' %}wo-completed
+                        {% elif design.status == 'Cancelled' %}wo-cancelled
+                        {% endif %}
+                    ">{{ design.status }}</td>
+
+                    <!-- TOOLS -->
+                    <td>{{ design.tools }}</td>
+
+                    <!-- WO STATUS -->
+                    <td class="
+                        {% if design.wo_status == 'In Progress' %}wo-in-progress
+                        {% elif design.wo_status == 'Completed' %}wo-completed
+                        {% elif design.wo_status == 'Cancelled' %}wo-cancelled
+                        {% endif %}
+                    ">{{ design.wo_status }}</td>
+
+                    <td>{{ design.responsible }}</td>
+
+                    <!-- PRIORITY -->
+                    <td>{{ design.priority }}</td>
+
+                    <td>{{ design.remarks }}</td>
+                    <td>{{ design.updated_at }}</td>
+                    <td>{{ design.updated_by }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% else %}
+<!-- Guest Landing Page -->
+<div class="container text-center mt-5">
+    <h1 class="display-4 fw-bold">Telecom Project Tracker</h1>
+    <p class="lead mt-3">A platform for managing telecom projects from planning → invoicing.</p>
+</div>
+
+<div class="text-center mt-4 mb-5">
+    <a href="{% url 'register' %}" class="btn btn-success btn-lg px-5">Get Started</a>
+</div>
+{% endif %}
+
+<script src="{% static 'js/liveSearch.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        enableLiveSearch("surveyTable", "searchInput");
+    });
+</script>
+
+{% endblock %}

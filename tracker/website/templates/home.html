@@ -2,138 +2,222 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<div class="container mt-5">
-    <div class="card shadow p-3 mb-4">
-        <h2 class="text-center mb-4">Survey Project Overview</h2>
-        <div class="row text-center">
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h5>Total Projects</h5>
-                    <h2><a href="#"></a>{{ total }}</h2>
+<style>
+    .dashboard-card {
+        border-radius: 14px;
+        transition: all 0.25s ease-in-out;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .dashboard-card h2 a:hover {
+        opacity: 0.8;
+    }
+</style>
+
+<div class="container mt-4">
+    <h3 class="text-center fw-bold mb-4">Survey Overview Dashboard</h3>
+
+    <!-- Cards Overview -->
+    <div class="row g-4 mb-5">
+
+        <!-- Total Projects -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Total Projects</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey' %}" class="text-decoration-none text-primary">{{ total }}</a>
+                    </h2>
                 </div>
             </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>Overlapping Clearance</h6>
-                    <h2><a href="{% url 'survey_filter' 'overlapping' %}">{{ overlapping }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>Parceling Stage</h6>
-                    <h2><a href="{% url 'survey_filter' 'parceling' %}">{{ parceling }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>GIS Post</h6>
-                    <h2><a href="{% url 'survey_filter' 'gis_post' %}">{{ gis_post }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>Survey Tool Access</h6>
-                    <h2><a href="{% url 'survey_filter' 'tool_access' %}">{{ tool_access }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>Survey Stage</h6>
-                    <h2><a href="{% url 'survey_filter' 'survey_stage' %}">{{ survey_stage }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>Cluster ID Acquisition</h6>
-                    <h2><a href="{% url 'survey_filter' 'cluster_id' %}">{{ cluster_id }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>HLD Submission</h6>
-                    <h2><a href="{% url 'survey_filter' 'hld_submission' %}">{{ hld_submission }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>HLD Approval</h6>
-                    <h2><a href="{% url 'survey_filter' 'hld_approval' %}">{{ hld_approval }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>Completed</h6>
-                    <h2><a href="{% url 'survey_filter' 'completed' %}">{{ completed }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>For Cancellation</h6>
-                    <h2><a href="{% url 'survey_filter' 'for_cancellation' %}">{{ for_cancellation }}</a></h2>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h6>Cancelled</h6>
-                    <h2><a href="{% url 'survey_filter' '{{ cancelled }}' %}">{{ cancelled }}</a></h2>
-                </div>
-            </div>
-
         </div>
+
+        <!-- Overlapping Clearance -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Overlapping Clearance</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'overlapping' %}" class="text-decoration-none text-warning">
+                            {{ overlapping }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parceling Stage -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Parceling Stage</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'parceling' %}" class="text-decoration-none text-info">
+                            {{ parceling }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- GIS Post -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">GIS Post</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'gis_post' %}" class="text-decoration-none text-danger">
+                            {{ gis_post }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Survey Tool Access -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Survey Tool Access</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'tool_access' %}" class="text-decoration-none text-secondary">
+                            {{ tool_access }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Survey Stage -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Survey Stage</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'survey_stage' %}" class="text-decoration-none text-success">
+                            {{ survey_stage }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cluster ID Acquisition -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Cluster ID Acquisition</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'cluster_id' %}" class="text-decoration-none text-info">
+                            {{ cluster_id }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- HLD Submission -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">HLD Submission</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'hld_submission' %}"
+                            class="text-decoration-none text-primary">{{ hld_submission }}</a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- HLD Approval -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">HLD Approval</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'hld_approval' %}" class="text-decoration-none text-success">
+                            {{ hld_approval }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Completed</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'completed' %}" class="text-decoration-none text-success">
+                            {{ completed }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- For Cancellation -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">For Cancellation</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'for_cancellation' %}"
+                            class="text-decoration-none text-warning">{{ for_cancellation }}</a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancelled -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Cancelled</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'survey_filter' 'cancelled' %}" class="text-decoration-none text-danger">
+                            {{ cancelled }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Pie Chart -->
-    <div class="card shadow p-4">
-        <h4 class="text-center">Tools Stage Distribution</h4>
-        <canvas id="statusPieChart" style="max-height: 350px;"></canvas>
+    <div class="card shadow p-4 border-0" style="border-radius: 14px;">
+        <h4 class="text-center fw-bold mb-4">Tools Stage Distribution</h4>
+        <canvas id="statusPieChart" style="max-height: 360px;"></canvas>
     </div>
 </div>
 
-<!-- Chart.js CDN -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
     const ctx = document.getElementById('statusPieChart').getContext('2d');
-
     new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: [
-                'Overlapping', 'Parceling', 'GIS Post', 'Tool Access',
-                'Survey Stage', 'Cluster ID', 'HLD Sub', 'HLD App',
-                'Completed', 'For Cancellation', 'Cancelled'
-            ],
+            labels: ['Overlapping', 'Parceling', 'GIS Post', 'Tool Access', 'Survey Stage', 'Cluster ID', 'HLD Sub', 'HLD App', 'Completed', 'For Cancellation', 'Cancelled'],
             datasets: [{
                 data: [
                     Number("{{ overlapping }}"), Number("{{ parceling }}"), Number("{{ gis_post }}"),
                     Number("{{ tool_access }}"), Number("{{ survey_stage }}"), Number("{{ cluster_id }}"),
-                    Number("{{ hld_submission }}"), Number("{{ hld_approval }}"), Number("{{ completed }}"),
-                    Number("{{ for_cancellation }}"), Number("{{ cancelled }}")
+                    Number("{{ hld_submission }}"), Number("{{ hld_approval }}"),
+                    Number("{{ completed }}"), Number("{{ for_cancellation }}"), Number("{{ cancelled }}")
                 ],
                 backgroundColor: [
-                    'rgba(255, 206, 86)',
-                    'rgba(75, 192, 192)',
-                    'rgba(255, 99, 132)',
-                    'rgba(54, 162, 235)',
-                    'rgba(201, 203, 207)',
-                    'rgba(153, 102, 255)',
-                    'rgba(255, 159, 64)',
-                    'rgba(99, 255, 132)',
-                    'rgba(16, 185, 129)',
-                    'rgba(255, 159, 64)',
-                    'rgba(200, 50, 50)'
+                    'rgba(255, 206, 86)', 'rgba(75, 192, 192)', 'rgba(255, 99, 132)',
+                    'rgba(54, 162, 235)', 'rgba(201, 203, 207)', 'rgba(153, 102, 255)',
+                    'rgba(255, 159, 64)', 'rgba(99, 255, 132)', 'rgba(16, 185, 129)',
+                    'rgba(255, 159, 64)', 'rgba(200, 50, 50)'
                 ]
             }]
         },
@@ -149,54 +233,7 @@
     <h1 class="display-5 fw-bold">Telecom Project Tracker</h1>
     <p class="lead mt-3">A centralized platform for managing telecom construction projects from planning to invoicing.
     </p>
+    <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg mt-4 px-5">Get Started</a>
 </div>
-
-<div class="container mt-5">
-    <div class="row text-center">
-        <div class="col-md-4">
-            <h5>📍 Track Work Progress</h5>
-            <p>Monitor the status of telecom construction stages such as HLD, LLD, Implementation, DCR, and Invoice.</p>
-        </div>
-        <div class="col-md-4">
-            <h5>📂 Organized Documentation</h5>
-            <p>Store project details, deliverables, and approvals in one secure platform.</p>
-        </div>
-        <div class="col-md-4">
-            <h5>📊 Real-time Status</h5>
-            <p>Stay updated with accurate progress monitoring and reduce manual reporting.</p>
-        </div>
-    </div>
-</div>
-<div class="container mt-5 text-center">
-    <h3>Built for Telecom Construction Teams</h3>
-    <p>Streamline your workflow, reduce errors, and improve project visibility across all phases.</p>
-</div>
-<div class="text-center mt-4 mb-5">
-    <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg px-5">Get Started</a>
-</div>
-
-
-<center>
-    <footer class="footer fixed-bottom bg-light py-3">
-
-        <p>Copyright © 2025 JohnJabZ<br>
-
-            This project is released as open source.
-            Permission is hereby granted to use, copy, modify, merge, publish, distribute,
-            sublicense, and/or sell copies of the software, subject to the inclusion of this
-            copyright notice in all copies or substantial portions of the software.<br>
-
-            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-            SOFTWARE.
-
-    </footer>
-</center>
 {% endif %}
-
-
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import survey
+from .models import survey, design
 
 
 class SignUpForm(UserCreationForm):
@@ -50,6 +50,15 @@ SURVEY_STATUS_CHOICES = [
     ('11 - Cancelled', '11 - Cancelled'),
 ]
 
+DESIGN_STATUS_CHOICES = [
+    ('For Survey', 'For Survey'),
+    ('For Submission', 'For Submission'),
+    ('For Approval', 'For Approval'),
+    ('Completed', 'Completed'),
+    ('For Cancellation', 'For Cancellation'),
+    ('Cancelled', 'Cancelled'),
+]
+
 RESPONSIBLE_CHOICES = [
     ('Hajdyah', 'Hajdyah'),
     ('Mr. Harris', 'Mr. Harris'),
@@ -67,6 +76,15 @@ TOOLS_CHOICES = [
     ('7 - Cancelled', '7 - Cancelled'),
 ]
 
+DESIGN_TOOLS_CHOICES = [
+    ('1 - PIP Submission', '1 - PIP Submission'),
+    ('2 - PIP Approval', '2 - PIP Approval'),
+    ('3 - Design Submission', '3 - Design Submission'),
+    ('4 - Design Approval', '4 - Design Approval'),
+    ('5 - Completed', '5 - Completed'),
+    ('6 - For Cancellation', '6 - For Cancellation'),
+    ('7 - Cancelled', '7 - Cancelled'),
+]
 WO_CHOICES = [
     ('In Progress', 'In Progress'),
     ('Completed', 'Completed'),
@@ -128,7 +146,7 @@ class AddSurveyForm(forms.ModelForm):
     )
     remarks = forms.CharField(
         widget=forms.Textarea(attrs={
-            "placeholder": "Remarks",
+            "placeholder": "Remarks / Notes",
             "class": "form-control",
             "rows": 4,
             "cols": 50
@@ -164,3 +182,104 @@ class AddSurveyForm(forms.ModelForm):
             self.fields['tools'].widget.attrs['class'] += ' editable-field'
             self.fields['priority'].widget.attrs['class'] += ' editable-field'
             self.fields['wo_status'].widget.attrs['class'] += ' editable-field'
+
+
+class AddDesignForm(forms.ModelForm):
+    district_name = forms.CharField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="District Name")
+    cluster_name = forms.CharField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="Cluster Name")
+    work_order = forms.CharField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="Work Order")
+    scope_work = forms.CharField(required=False, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="Scope of Work")
+    subclass = forms.CharField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="SubClass")
+    project_type = forms.CharField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="Project Type")
+    year = forms.IntegerField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="Year")
+    RITM = forms.CharField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="RITM")
+    region = forms.CharField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="Region")
+    target_area = forms.IntegerField(required=False, widget=forms.widgets.NumberInput(
+        attrs={"class": "form-control"}), label="Target Area")
+    date_assigned = forms.DateField(required=True, widget=forms.widgets.DateInput(
+        attrs={"type": "date", "class": "form-control"}), label="Date Assigned")
+    design_type = forms.CharField(required=True, widget=forms.widgets.TextInput(
+        attrs={"class": "form-control"}), label="Design Type")
+    status = forms.ChoiceField(
+        choices=DESIGN_STATUS_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Status",
+        initial='For Submission'
+    )
+
+    tools = forms.ChoiceField(
+        choices=DESIGN_TOOLS_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Service Now Tools",
+        initial='1 - PIP Submission'
+    )
+
+    wo_status = forms.ChoiceField(
+        choices=WO_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Work Order Status",
+        initial='In Progress'
+    )
+
+    responsible = forms.ChoiceField(
+        choices=RESPONSIBLE_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Responsible",
+        initial='Hajdyah'
+    )
+
+    priority = forms.ChoiceField(
+        choices=PRIORITY_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Priority",
+        initial='Low'
+    )
+    remarks = forms.CharField(
+        widget=forms.Textarea(attrs={
+            "placeholder": "Remarks / Notes",
+            "class": "form-control",
+            "rows": 4,
+            "cols": 50
+        }),
+        required=False,
+        label=""
+    )
+
+    class Meta:
+        model = design
+        fields = '__all__'
+        exclude = ('updated_by',)
+
+    def __init__(self, *args, **kwargs):
+        # Remove the custom argument so it doesn't reach BaseModelForm
+        is_update = kwargs.pop('is_update', False)
+        super().__init__(*args, **kwargs)
+
+        if is_update:
+            # Make fields read-only
+            readonly_fields = [
+                'work_order', 'subclass', 'region', 'project_type', 'year',
+                'RITM', 'region', 'target_area', 'date_assigned',
+                'responsible',
+            ]
+            for field in readonly_fields:
+                self.fields[field].widget.attrs['readonly'] = True
+
+            self.fields['district_name'].widget.attrs['class'] += ' editable-field'
+            self.fields['cluster_name'].widget.attrs['class'] += ' editable-field'
+            self.fields['scope_work'].widget.attrs['class'] += ' editable-field'
+            self.fields['design_type'].widget.attrs['class'] += ' editable-field'
+            self.fields['status'].widget.attrs['class'] += ' editable-field'
+            self.fields['tools'].widget.attrs['class'] += ' editable-field'
+            self.fields['wo_status'].widget.attrs['class'] += ' editable-field'
+            self.fields['priority'].widget.attrs['class'] += ' editable-field'
+            self.fields['remarks'].widget.attrs['class'] += ' editable-field'

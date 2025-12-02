@@ -6,20 +6,27 @@
 
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold text-primary">🌐 Site Details</h2>
+        <h2 class="fw-bold text-primary">
+            🌐 Site Details
+        </h2>
 
         <div>
-            <a href="{% url 'survey' %}" class="btn btn-outline-secondary me-2">← Back</a>
-            <a href="{% url 'update_survey_record' survey_record.id %}" class="btn btn-outline-primary me-2">✏ Edit</a>
-            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">🗑
-                Delete</button>
+            <a href="{% url 'design' %}" class="btn btn-outline-secondary me-2">
+                ← Back
+            </a>
+            <a href="{% url 'update_design_record' design_record.id %}" class="btn btn-outline-primary me-2">
+                ✏ Edit
+            </a>
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                🗑 Delete
+            </button>
         </div>
     </div>
 
     <!-- Details Card -->
     <div class="card shadow-lg rounded-4">
         <div class="card-header bg-dark text-white fw-bold">
-            {{ survey_record.cluster_name }} — {{ survey_record.work_order }}
+            {{ design_record.cluster_name }} — {{ design_record.work_order }}
         </div>
 
         <div class="card-body p-4">
@@ -27,31 +34,45 @@
 
                 <!-- Column 1 -->
                 <div class="col-md-6">
-                    <p><strong>RITM #:</strong> {{ survey_record.RITM }}</p>
-                    <p><strong>Region:</strong> {{ survey_record.region }}</p>
-                    <p><strong>Project Type:</strong> {{ survey_record.project_type }}</p>
-                    <p><strong>Target Area:</strong> {{ survey_record.target_area }}</p>
-                    <p><strong>Status:</strong> {{ survey_record.status }}</p>
-                    <p><strong>Date Assigned:</strong> {{ survey_record.date_assigned|date:"Y-m-d" }}</p>
+                    <p><strong>RITM #:</strong> {{ design_record.RITM }}</p>
+                    <p><strong>Subclass:</strong> {{ design_record.subclass }}</p>
+                    <p><strong>District:</strong> {{ design_record.district_name }}</p>
+                    <p><strong>Design Type:</strong> {{ design_record.design_type }}</p>
+                    <p><strong>Region:</strong> {{ design_record.region }}</p>
+                    <p><strong>Project Type:</strong> {{ design_record.project_type }}</p>
                 </div>
 
                 <!-- Column 2 -->
                 <div class="col-md-6">
-                    <p><strong>ServiceNow Tools:</strong> {{ survey_record.tools }}</p>
-                    <p><strong>Work Order Status:</strong> {{ survey_record.wo_status }}</p>
-                    <p><strong>Responsible:</strong> {{ survey_record.responsible }}</p>
-                    <p><strong>Priority:</strong> {{ survey_record.priority }}</p>
-                    <p><strong>Updated At:</strong> {{ survey_record.updated_at|date:"Y-m-d H:i" }}</p>
-                    <p><strong>Updated By:</strong> {{ survey_record.updated_by }}</p>
+                    <p><strong>Tools:</strong> {{ design_record.tools }}</p>
+                    <p><strong>Work Order Status:</strong> {{ design_record.wo_status }}</p>
+                    <p><strong>Status:</strong> {{ design_record.status }}</p>
+                    <p><strong>Responsible:</strong> {{ design_record.responsible }}</p>
+                    <p><strong>Year:</strong> {{ design_record.year }}</p>
+                    <p><strong>Scope of Work:</strong> {{ design_record.scope_work }}</p>
+
+
                 </div>
             </div>
 
-            <!-- Remarks Section -->
+            <!-- Second Row -->
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Priority:</strong> {{ design_record.priority }}</p>
+                    <p><strong>Date Assigned:</strong> {{ design_record.date_assigned }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Updated At:</strong> {{ design_record.updated_at }}</p>
+                    <p><strong>Updated By:</strong> {{ design_record.updated_by }}</p>
+                </div>
+            </div>
             <hr>
             <div class="mb-3">
                 <label class="form-label fw-bold">Remarks:</label>
-                <textarea class="form-control" rows="4" readonly
-                    style="resize: vertical;">{{ survey_record.remarks }}</textarea>
+                <textarea class="form-control" rows="4" readonly style="resize: vertical;">
+                    {{ design_record.remarks }}
+                </textarea>
             </div>
         </div>
     </div>
@@ -97,6 +118,7 @@
     </div>
 </div>
 
+
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmLabel">
     <div class="modal-dialog modal-dialog-centered">
@@ -113,7 +135,7 @@
             </div>
 
             <div class="modal-footer">
-                <a href="{% url 'delete_survey_record' survey_record.id %}" class="btn btn-danger">Yes, Delete</a>
+                <a href="{% url 'delete_design_record' design_record.id %}" class="btn btn-danger">Yes, Delete</a>
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
 

@@ -2,7 +2,7 @@ from openpyxl import Workbook
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm, AddSurveyForm
+from .forms import SignUpForm, AddSurveyForm, AddDesignForm
 from .models import survey, design
 from django.contrib.contenttypes.models import ContentType
 from .models import ActivityLog
@@ -15,9 +15,81 @@ import numpy as np
 
 
 # Create your views here.
+# Dashboard Views
+def dashboard_design(request):
+    # Count all records
+    total = design.objects.count()
+
+    # Breakdowns by tools field
+    for_submission = design.objects.filter(
+        status__icontains="For Submission").count()
+    for_survey = design.objects.filter(
+        status__icontains="For Survey").count()
+    for_approval = design.objects.filter(
+        status__icontains="For Approval").count()
+    for_submission = design.objects.filter(
+        status__icontains="For Submission").count()
+    for_approval = design.objects.filter(
+        status__icontains="For Approval").count()
+    completed = design.objects.filter(
+        status__icontains="Completed").count()
+    for_cancellation = design.objects.filter(
+        status__icontains="For Cancellation").count()
+    cancelled = design.objects.filter(
+        status__icontains="Cancelled").count()
+
+    context = {
+        "total": total,
+        "for_submission": for_submission,
+        "for_survey": for_survey,
+        "for_approval": for_approval,
+        "completed": completed,
+        "for_cancellation": for_cancellation,
+        "cancelled": cancelled,
+    }
+
+    return render(request, "dashboard_design.html", context)
 
 
-def home(request):
+def dashboard_asbuilt(request):
+    # check to see if logging in
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        # Authenticate
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You have logged in!")
+            return redirect('home')
+        else:
+            messages.error(
+                request, "Username does not Exist, Please register for an account.")
+            return redirect('home')
+    else:
+        return render(request, 'dashboard_asbuilt.html', {})
+
+
+def dashboard_sor(request):
+    # check to see if logging in
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        # Authenticate
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You have logged in!")
+            return redirect('home')
+        else:
+            messages.error(
+                request, "Username does not Exist, Please register for an account.")
+            return redirect('home')
+    else:
+        return render(request, 'dashboard_sor.html', {})
+
+
+def home(request):  # Survey Dashboard
     # Count all records
     total = survey.objects.count()
 
@@ -60,63 +132,6 @@ def home(request):
     }
 
     return render(request, "home.html", context)
-
-
-def dashboard_design(request):
-    # check to see if logging in
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        # Authenticate
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, "You have logged in!")
-            return redirect('home')
-        else:
-            messages.error(
-                request, "Username does not Exist, Please register for an account.")
-            return redirect('home')
-    else:
-        return render(request, 'dashboard_design.html', {})
-
-
-def dashboard_asbuilt(request):
-    # check to see if logging in
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        # Authenticate
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, "You have logged in!")
-            return redirect('home')
-        else:
-            messages.error(
-                request, "Username does not Exist, Please register for an account.")
-            return redirect('home')
-    else:
-        return render(request, 'dashboard_asbuilt.html', {})
-
-
-def dashboard_sor(request):
-    # check to see if logging in
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        # Authenticate
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, "You have logged in!")
-            return redirect('home')
-        else:
-            messages.error(
-                request, "Username does not Exist, Please register for an account.")
-            return redirect('home')
-    else:
-        return render(request, 'dashboard_sor.html', {})
 
 
 def login_user(request):
@@ -164,6 +179,7 @@ def register_user(request):
     return render(request, 'register.html', {'form': form})
 
 
+# Survey Views
 def survey_list(request):
     surveys = survey.objects.all().order_by('tools')
     # check to see if logging in
@@ -452,15 +468,59 @@ def import_survey_view(request):
 
 
 def survey_filter(request, filter_type):
+    """
+    Filter surveys by stage based on the filter_type from the dashboard.
+    """
     if filter_type == "overlapping":
-        items = survey.objects.filter(status__icontains="Clearance")
+        items = survey.objects.filter(
+            status__icontains="1 - Overlapping Clearance")
         title = "Overlapping Clearance"
+
     elif filter_type == "parceling":
         items = survey.objects.filter(status__icontains="2 - Parceling Stage")
         title = "Parceling Stage"
+
     elif filter_type == "gis_post":
         items = survey.objects.filter(status__icontains="3 - GIS Post")
         title = "GIS Post"
+
+    elif filter_type == "tool_access":
+        items = survey.objects.filter(
+            status__icontains="4 - Survey tool Access")
+        title = "Survey Tool Access"
+
+    elif filter_type == "survey_stage":
+        items = survey.objects.filter(status__icontains="5 - Survey Stage")
+        title = "Survey Stage"
+
+    elif filter_type == "cluster_id":
+        items = survey.objects.filter(
+            status__icontains="6 - Cluster ID Acquisition")
+        title = "Cluster ID Acquisition"
+
+    elif filter_type == "hld_submission":
+        items = survey.objects.filter(
+            status__icontains="7 - HLD Package Submission")
+        title = "HLD Package Submission"
+
+    elif filter_type == "hld_approval":
+        items = survey.objects.filter(
+            status__icontains="8 - HLD Package Approval")
+        title = "HLD Package Approval"
+
+    elif filter_type == "completed":
+        items = survey.objects.filter(status__icontains="9 - Completed")
+        title = "Completed"
+
+    elif filter_type == "for_cancellation":
+        items = survey.objects.filter(
+            status__icontains="10 - For Cancellation")
+        title = "For Cancellation"
+
+    elif filter_type == "cancelled":
+        items = survey.objects.filter(status__icontains="11 - Cancelled")
+        title = "Cancelled"
+
     else:
         items = survey.objects.none()
         title = "Unknown Filter"
@@ -470,4 +530,166 @@ def survey_filter(request, filter_type):
         "title": title,
         "count": items.count(),
     }
+
     return render(request, "survey_filter.html", context)
+
+
+# Design Views
+def design_list(request):
+    designs = design.objects.all().order_by('tools')
+    # check to see if logging in
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        # Authenticate
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You have logged in!")
+            return redirect('design')
+        else:
+            messages.success(
+                request, "Username does not Exist, Please register for an account.")
+            return redirect('home')
+    else:
+        return render(request, 'design.html', {'designs': designs})
+
+
+def design_detail(request, pk):
+    if request.user.is_authenticated:
+        design_record = design.objects.get(id=pk)
+
+        # Fetch logs for this specific record
+        logs = ActivityLog.objects.filter(
+            content_type=ContentType.objects.get_for_model(design),
+            object_id=design_record.id
+        ).order_by('-timestamp')
+
+        return render(request, 'design_detail.html', {
+            'design_record': design_record,
+            'logs': logs
+        })
+    else:
+        messages.error(request, "You must be logged in to View that page.")
+        return redirect('home')
+
+
+def add_design_record(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to do that.")
+        return redirect('home')
+
+    form = AddDesignForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            design_instance = form.save(commit=False)
+            design_instance.updated_by = request.user
+            design_instance.save()
+            messages.success(request, "Data Added Successfully!")
+            return redirect('design')
+        else:
+            print(form.errors)  # <-- this will show what’s wrong in the console
+
+    return render(request, 'add_design_record.html', {'form': form})
+
+
+def update_design_record(request, pk):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to do that.")
+        return redirect('home')
+
+    current_record = design.objects.get(id=pk)
+
+    fields_to_check = ['status',
+                       'wo_status', 'tools', 'priority', 'remarks']
+
+    old_data = {field: getattr(current_record, field)
+                for field in fields_to_check}
+
+    form = AddDesignForm(request.POST or None,
+                         instance=current_record, is_update=True)
+
+    if request.method == 'POST' and form.is_valid():
+        updated_instance = form.save(commit=False)
+
+        changed_fields = [
+            field for field in fields_to_check
+            if str(old_data[field]) != str(getattr(updated_instance, field))
+        ]
+
+        updated_instance.updated_by = request.user
+        updated_instance.save()
+
+        if changed_fields:
+            log_changes(request, updated_instance, old_data, changed_fields)
+        else:
+            print("No fields changed")  # Debug only
+
+        messages.success(request, "Data Updated Successfully!")
+        return redirect('update_design_record', pk=current_record.id)
+
+    logs = ActivityLog.objects.filter(
+        content_type=ContentType.objects.get_for_model(design),
+        object_id=current_record.id
+    ).order_by('-timestamp')
+
+    return render(request, 'update_design_record.html', {
+        'form': form,
+        'record': current_record,
+        'logs': logs
+    })
+
+
+def delete_design_record(request, pk):
+    if request.user.is_authenticated:
+        delete_it = design.objects.get(id=pk)
+        delete_it.delete()
+        messages.success(request, "Deleted Successfully!")
+        return redirect('design')
+    else:
+        messages.success(
+            request, "You must be logged in to do that.")
+        return redirect('home')
+
+
+def design_filter(request, filter_type):
+    """
+    Filter surveys by stage based on the filter_type from the dashboard.
+    """
+    if filter_type == "for_survey":
+        items = design.objects.filter(
+            status__icontains="For Survey")
+        title = "For Survey"
+
+    elif filter_type == "for_submission":
+        items = design.objects.filter(status__icontains="For Submission")
+        title = "For Submission"
+
+    elif filter_type == "for_approval":
+        items = design.objects.filter(status__icontains="For Approval")
+        title = "For Approval"
+
+    elif filter_type == "completed":
+        items = design.objects.filter(status__icontains="Completed")
+        title = "Completed"
+
+    elif filter_type == "for_cancellation":
+        items = design.objects.filter(
+            status__icontains="For Cancellation")
+        title = "For Cancellation"
+
+    elif filter_type == "cancelled":
+        items = design.objects.filter(status__icontains="Cancelled")
+        title = "Cancelled"
+
+    else:
+        items = design.objects.none()
+        title = "Unknown Filter"
+
+    context = {
+        "items": items,
+        "title": title,
+        "count": items.count(),
+    }
+
+    return render(request, "design_filter.html", context)

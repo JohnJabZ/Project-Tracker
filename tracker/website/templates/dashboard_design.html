@@ -2,73 +2,169 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<div class="container mt-5">
-    <div class="card shadow p-3 mb-4">
-        <h2 class="text-center mb-4">Design Project Overview</h2>
-        <div class="row text-center">
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h5>Total Projects</h5>
-                    <h2>{{ total }}</h2>
-                </div>
-            </div>
+<style>
+    .dashboard-card {
+        border-radius: 14px;
+        transition: all 0.25s ease-in-out;
+    }
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h5>Ongoing</h5>
-                    <h2>{{ ongoing }}</h2>
-                </div>
-            </div>
+    .dashboard-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.15) !important;
+    }
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h5>Completed</h5>
-                    <h2>{{ completed }}</h2>
-                </div>
-            </div>
+    .dashboard-card h2 a:hover {
+        opacity: 0.8;
+    }
+</style>
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h5>Pending</h5>
-                    <h2>{{ pending }}</h2>
+<div class="container mt-4">
+
+    <!-- Overview Cards -->
+    <h3 class="mb-4 fw-bold text-center">Design Overview Dashboard</h3>
+
+    <div class="row g-4 mb-5">
+
+        <!-- Total -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Total Projects</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'design' %}" class="text-decoration-none text-primary">{{ total }}</a>
+                    </h2>
                 </div>
             </div>
         </div>
+
+        <!-- For Survey -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">For Survey</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'design_filter' 'for_survey' %}" class="text-decoration-none text-warning">
+                            {{ for_survey }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- For Submission -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">For Submission</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'design_filter' 'for_submission' %}" class="text-decoration-none text-warning">
+                            {{ for_submission }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- For Approval -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">For Approval</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'design_filter' 'for_approval' %}" class="text-decoration-none text-info">
+                            {{ for_approval }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Completed</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'design_filter' 'completed' %}" class="text-decoration-none text-success">
+                            {{ completed }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- For Cancellation -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">For Cancellation</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'design_filter' 'for_cancellation' %}"
+                            class="text-decoration-none text-secondary">
+                            {{ for_cancellation }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancelled -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm border-0 dashboard-card h-100">
+                <div class="card-body py-4">
+                    <h6 class="text-muted text-uppercase small mb-2">Cancelled</h6>
+                    <h2 class="fw-bolder">
+                        <a href="{% url 'design_filter' 'cancelled' %}" class="text-decoration-none text-danger">
+                            {{ cancelled }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Pie Chart -->
-    <div class="card shadow p-4">
-        <h4 class="text-center">Project Status Breakdown</h4>
-        <canvas id="statusPieChart" style="max-height: 300px;"></canvas>
+    <div class="card shadow p-4 border-0" style="border-radius: 14px;">
+        <h4 class="text-center fw-bold mb-4">Tools Stage Distribution</h4>
+        <canvas id="statusPieChart" style="max-height: 360px;"></canvas>
     </div>
+
 </div>
 
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('statusPieChart').getContext('2d');
-
     new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['Ongoing', 'Completed', 'Pending'],
+            labels: ['For Survey', 'For Submission', 'For Approval', 'Completed', 'For Cancellation', 'Cancelled'],
             datasets: [{
-                data: [{{ ongoing }}, {{ completed }}, {{ pending }}],
-        backgroundColor: [
-        'rgba(255, 206, 86)',   // yellow-ish
-        'rgba(75, 192, 192)',   // green
-        'rgba(255, 99, 132)'    // red
-    ]
-        }]
-    },
+                data: [
+                    Number("{{ for_survey }}"),
+                    Number("{{ for_submission }}"),
+                    Number("{{ for_approval }}"),
+                    Number("{{ completed }}"),
+                    Number("{{ for_cancellation }}"),
+                    Number("{{ cancelled }}")
+                ],
+                backgroundColor: [
+                    'rgba(255, 206, 86)',
+                    'rgba(75, 192, 192)',
+                    'rgba(54, 162, 235)',
+                    'rgba(255, 99, 132)',
+                    'rgba(201, 203, 207)',
+                    'rgba(153, 102, 255)',
+                ]
+            }]
+        },
         options: {
-        responsive: true,
-        plugins: {
-            legend: { position: 'bottom' }
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } }
         }
-    }
-});
+    });
 </script>
 
 {% else %}
@@ -76,46 +172,7 @@
     <h1 class="display-5 fw-bold">Telecom Project Tracker</h1>
     <p class="lead mt-3">A centralized platform for managing telecom construction projects from planning to invoicing.
     </p>
+    <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg mt-4 px-5">Get Started</a>
 </div>
-
-<div class="container mt-5">
-    <div class="row text-center">
-        <div class="col-md-4">
-            <h5>📍 Track Work Progress</h5>
-            <p>Monitor the status of telecom construction stages such as HLD, LLD, Implementation, DCR, and Invoice.</p>
-        </div>
-        <div class="col-md-4">
-            <h5>📂 Organized Documentation</h5>
-            <p>Store project details, deliverables, and approvals in one secure platform.</p>
-        </div>
-        <div class="col-md-4">
-            <h5>📊 Real-time Status</h5>
-            <p>Stay updated with accurate progress monitoring and reduce manual reporting.</p>
-        </div>
-    </div>
-</div>
-<div class="container mt-5 text-center">
-    <h3>Built for Telecom Construction Teams</h3>
-    <p>Streamline your workflow, reduce errors, and improve project visibility across all phases.</p>
-</div>
-<div class="text-center mt-4 mb-5">
-    <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg px-5">Get Started</a>
-</div>
-
-
-<center>
-    <footer class="footer fixed-bottom bg-light py-3">
-
-        <p>Copyright © 2025 JohnJabZ.<br>
-            All rights reserved.<br>
-            This Project Tracker and its associated content, structure, design, and source code are the
-            intellectual property of JohnJabZ.<br>
-            No part of this product may be reproduced, distributed, or modified without prior written permission.
-        </p>
-
-    </footer>
-</center>
 {% endif %}
-
-
 {% endblock %}

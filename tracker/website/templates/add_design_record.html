@@ -5,27 +5,34 @@
 
     <!-- Page Title -->
     <div class="text-center mb-4">
-        <h2 class="fw-bold text-primary">➕ Add Survey Record</h2>
+        <h2 class="fw-bold text-primary">➕ Add Design Record</h2>
         <p class="text-muted">Fill in the information below and click Add</p>
     </div>
 
     <!-- Form Card -->
     <div class="card shadow-lg rounded-4 border-0">
         <div class="card-body p-4">
-            <form method="POST" action="{% url 'add_survey_record' %}">
+            <form method="POST" action="{% url 'add_design_record' %}">
                 {% csrf_token %}
 
                 <div class="row">
+                    <div class="col-md-6 mb-3">{{ form.district_name.label_tag }} {{ form.district_name }}</div>
                     <div class="col-md-6 mb-3">{{ form.cluster_name.label_tag }} {{ form.cluster_name }}</div>
+
                     <div class="col-md-6 mb-3">{{ form.work_order.label_tag }} {{ form.work_order }}</div>
+                    <div class="col-md-6 mb-3">{{ form.subclass.label_tag }} {{ form.subclass }}</div>
 
                     <div class="col-md-6 mb-3">{{ form.region.label_tag }} {{ form.region }}</div>
                     <div class="col-md-6 mb-3">{{ form.project_type.label_tag }} {{ form.project_type }}</div>
 
                     <div class="col-md-6 mb-3">{{ form.RITM.label_tag }} {{ form.RITM }}</div>
+                    <div class="col-md-6 mb-3">{{ form.year.label_tag }} {{ form.year }}</div>
+
                     <div class="col-md-6 mb-3">{{ form.target_area.label_tag }} {{ form.target_area }}</div>
+                    <div class="col-md-6 mb-3">{{ form.scope_work.label_tag }} {{ form.scope_work }}</div>
 
                     <div class="col-md-6 mb-3">{{ form.date_assigned.label_tag }} {{ form.date_assigned }}</div>
+                    <div class="col-md-6 mb-3">{{ form.design_type.label_tag }} {{ form.design_type }}</div>
                     <div class="col-md-6 mb-3">{{ form.status.label_tag }} {{ form.status }}</div>
 
                     <div class="col-md-6 mb-3">{{ form.responsible.label_tag }} {{ form.responsible }}</div>
@@ -42,7 +49,7 @@
 
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary px-4 me-2">💾 Add Record</button>
-                    <a href="{% url 'survey' %}" class="btn btn-secondary px-4">← Back</a>
+                    <a href="{% url 'design' %}" class="btn btn-secondary px-4">← Back</a>
                 </div>
             </form>
         </div>
