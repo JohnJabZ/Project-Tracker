@@ -20,30 +20,30 @@
 
 <div class="container mt-4">
 
-    <!-- Overview Cards -->
     <h3 class="mb-4 fw-bold text-center">Design Overview Dashboard</h3>
 
     <div class="row g-4 mb-5">
 
-        <!-- Total -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Total Projects</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'design' %}" class="text-decoration-none text-primary">{{ total }}</a>
+                        <a href="{% url 'design' %}" class="text-decoration-none" style="color: #0d6efd;">
+                            {{ total }}
+                        </a>
                     </h2>
                 </div>
             </div>
         </div>
 
-        <!-- For Survey -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">For Survey</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'design_filter' 'for_survey' %}" class="text-decoration-none text-warning">
+                        <a href="{% url 'design_filter' 'for_survey' %}" class="text-decoration-none"
+                            style="color: #ffc107;">
                             {{ for_survey }}
                         </a>
                     </h2>
@@ -51,13 +51,13 @@
             </div>
         </div>
 
-        <!-- For Submission -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">For Submission</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'design_filter' 'for_submission' %}" class="text-decoration-none text-warning">
+                        <a href="{% url 'design_filter' 'for_submission' %}" class="text-decoration-none"
+                            style="color: #fd7e14;">
                             {{ for_submission }}
                         </a>
                     </h2>
@@ -65,13 +65,13 @@
             </div>
         </div>
 
-        <!-- For Approval -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">For Approval</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'design_filter' 'for_approval' %}" class="text-decoration-none text-info">
+                        <a href="{% url 'design_filter' 'for_approval' %}" class="text-decoration-none"
+                            style="color: #0dcaf0;">
                             {{ for_approval }}
                         </a>
                     </h2>
@@ -79,13 +79,13 @@
             </div>
         </div>
 
-        <!-- Completed -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Completed</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'design_filter' 'completed' %}" class="text-decoration-none text-success">
+                        <a href="{% url 'design_filter' 'completed' %}" class="text-decoration-none"
+                            style="color: #198754;">
                             {{ completed }}
                         </a>
                     </h2>
@@ -93,14 +93,13 @@
             </div>
         </div>
 
-        <!-- For Cancellation -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">For Cancellation</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'design_filter' 'for_cancellation' %}"
-                            class="text-decoration-none text-secondary">
+                        <a href="{% url 'design_filter' 'for_cancellation' %}" class="text-decoration-none"
+                            style="color: #6c757d;">
                             {{ for_cancellation }}
                         </a>
                     </h2>
@@ -108,13 +107,13 @@
             </div>
         </div>
 
-        <!-- Cancelled -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Cancelled</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'design_filter' 'cancelled' %}" class="text-decoration-none text-danger">
+                        <a href="{% url 'design_filter' 'cancelled' %}" class="text-decoration-none"
+                            style="color: #dc3545;">
                             {{ cancelled }}
                         </a>
                     </h2>
@@ -124,22 +123,38 @@
 
     </div>
 
-    <!-- Pie Chart -->
     <div class="card shadow p-4 border-0" style="border-radius: 14px;">
-        <h4 class="text-center fw-bold mb-4">Tools Stage Distribution</h4>
+        <h4 class="text-center fw-bold mb-4">Design Status Chart</h4>
         <canvas id="statusPieChart" style="max-height: 360px;"></canvas>
     </div>
 
 </div>
 
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('statusPieChart').getContext('2d');
+
+    // Define consistent and UNIQUE colors for each stage (matching card inline styles)
+    const pieChartBackgroundColors = [
+        // For Survey: Warning Yellow
+        '#ffc107',
+        // For Submission: Deep Orange
+        '#fd7e14',
+        // For Approval: Info Cyan
+        '#0dcaf0',
+        // Completed: Success Green
+        '#198754',
+        // For Cancellation: Secondary Gray
+        '#6c757d',
+        // Cancelled: Danger Red
+        '#dc3545',
+    ];
+
     new Chart(ctx, {
         type: 'pie',
         data: {
+            // The order of these labels MUST match the order of data and colors
             labels: ['For Survey', 'For Submission', 'For Approval', 'Completed', 'For Cancellation', 'Cancelled'],
             datasets: [{
                 data: [
@@ -150,14 +165,7 @@
                     Number("{{ for_cancellation }}"),
                     Number("{{ cancelled }}")
                 ],
-                backgroundColor: [
-                    'rgba(255, 206, 86)',
-                    'rgba(75, 192, 192)',
-                    'rgba(54, 162, 235)',
-                    'rgba(255, 99, 132)',
-                    'rgba(201, 203, 207)',
-                    'rgba(153, 102, 255)',
-                ]
+                backgroundColor: pieChartBackgroundColors // Using the precise, matching colors
             }]
         },
         options: {

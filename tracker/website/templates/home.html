@@ -22,28 +22,28 @@
 <div class="container mt-4">
     <h3 class="text-center fw-bold mb-4">Survey Overview Dashboard</h3>
 
-    <!-- Cards Overview -->
     <div class="row g-4 mb-5">
 
-        <!-- Total Projects -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Total Projects</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey' %}" class="text-decoration-none text-primary">{{ total }}</a>
+                        <a href="{% url 'survey' %}" class="text-decoration-none" style="color: #2070e0;">
+                            {{ total }}
+                        </a>
                     </h2>
                 </div>
             </div>
         </div>
 
-        <!-- Overlapping Clearance -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Overlapping Clearance</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'overlapping' %}" class="text-decoration-none text-warning">
+                        <a href="{% url 'survey_filter' 'overlapping' %}" class="text-decoration-none"
+                            style="color: #f8b800;">
                             {{ overlapping }}
                         </a>
                     </h2>
@@ -51,13 +51,13 @@
             </div>
         </div>
 
-        <!-- Parceling Stage -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Parceling Stage</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'parceling' %}" class="text-decoration-none text-info">
+                        <a href="{% url 'survey_filter' 'parceling' %}" class="text-decoration-none"
+                            style="color: #00c0c0;">
                             {{ parceling }}
                         </a>
                     </h2>
@@ -65,13 +65,13 @@
             </div>
         </div>
 
-        <!-- GIS Post -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">GIS Post</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'gis_post' %}" class="text-decoration-none text-danger">
+                        <a href="{% url 'survey_filter' 'gis_post' %}" class="text-decoration-none"
+                            style="color: #495057;">
                             {{ gis_post }}
                         </a>
                     </h2>
@@ -79,13 +79,13 @@
             </div>
         </div>
 
-        <!-- Survey Tool Access -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Survey Tool Access</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'tool_access' %}" class="text-decoration-none text-secondary">
+                        <a href="{% url 'survey_filter' 'tool_access' %}" class="text-decoration-none"
+                            style="color: #6c757d;">
                             {{ tool_access }}
                         </a>
                     </h2>
@@ -93,13 +93,13 @@
             </div>
         </div>
 
-        <!-- Survey Stage -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Survey Stage</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'survey_stage' %}" class="text-decoration-none text-success">
+                        <a href="{% url 'survey_filter' 'survey_stage' %}" class="text-decoration-none"
+                            style="color: #5cb85c;">
                             {{ survey_stage }}
                         </a>
                     </h2>
@@ -107,13 +107,13 @@
             </div>
         </div>
 
-        <!-- Cluster ID Acquisition -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Cluster ID Acquisition</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'cluster_id' %}" class="text-decoration-none text-info">
+                        <a href="{% url 'survey_filter' 'cluster_id' %}" class="text-decoration-none"
+                            style="color: #6f42c1;">
                             {{ cluster_id }}
                         </a>
                     </h2>
@@ -121,26 +121,25 @@
             </div>
         </div>
 
-        <!-- HLD Submission -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">HLD Submission</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'hld_submission' %}"
-                            class="text-decoration-none text-primary">{{ hld_submission }}</a>
+                        <a href="{% url 'survey_filter' 'hld_submission' %}" class="text-decoration-none"
+                            style="color: #2070e0;">{{ hld_submission }}</a>
                     </h2>
                 </div>
             </div>
         </div>
 
-        <!-- HLD Approval -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">HLD Approval</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'hld_approval' %}" class="text-decoration-none text-success">
+                        <a href="{% url 'survey_filter' 'hld_approval' %}" class="text-decoration-none"
+                            style="color: #fd7e14;">
                             {{ hld_approval }}
                         </a>
                     </h2>
@@ -148,13 +147,13 @@
             </div>
         </div>
 
-        <!-- Completed -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Completed</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'completed' %}" class="text-decoration-none text-success">
+                        <a href="{% url 'survey_filter' 'completed' %}" class="text-decoration-none"
+                            style="color: #198754;">
                             {{ completed }}
                         </a>
                     </h2>
@@ -162,26 +161,25 @@
             </div>
         </div>
 
-        <!-- For Cancellation -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">For Cancellation</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'for_cancellation' %}"
-                            class="text-decoration-none text-warning">{{ for_cancellation }}</a>
+                        <a href="{% url 'survey_filter' 'for_cancellation' %}" class="text-decoration-none"
+                            style="color: #e83e8c;">{{ for_cancellation }}</a>
                     </h2>
                 </div>
             </div>
         </div>
 
-        <!-- Cancelled -->
         <div class="col-md-3 col-sm-6">
             <div class="card text-center shadow-sm border-0 dashboard-card h-100">
                 <div class="card-body py-4">
                     <h6 class="text-muted text-uppercase small mb-2">Cancelled</h6>
                     <h2 class="fw-bolder">
-                        <a href="{% url 'survey_filter' 'cancelled' %}" class="text-decoration-none text-danger">
+                        <a href="{% url 'survey_filter' 'cancelled' %}" class="text-decoration-none"
+                            style="color: #dc3545;">
                             {{ cancelled }}
                         </a>
                     </h2>
@@ -191,21 +189,52 @@
 
     </div>
 
-    <!-- Pie Chart -->
     <div class="card shadow p-4 border-0" style="border-radius: 14px;">
-        <h4 class="text-center fw-bold mb-4">Tools Stage Distribution</h4>
+        <h4 class="text-center fw-bold mb-4">Survey Status Chart</h4>
         <canvas id="statusPieChart" style="max-height: 360px;"></canvas>
     </div>
 </div>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('statusPieChart').getContext('2d');
+
+    // Define consistent and UNIQUE colors for each stage (matching card inline styles)
+    const pieChartBackgroundColors = [
+        // Overlapping Clearance: Amber Yellow
+        '#f8b800',
+        // Parceling Stage: Bright Cyan
+        '#00c0c0',
+        // GIS Post: Dark Gray
+        '#495057',
+        // Survey Tool Access: Secondary Gray
+        '#6c757d',
+        // Survey Stage: Mid Green
+        '#5cb85c',
+        // Cluster ID Acquisition: Indigo Purple
+        '#6f42c1',
+        // HLD Submission: Vibrant Blue
+        '#2070e0',
+        // HLD Approval: Deep Orange
+        '#fd7e14',
+        // COMPLETED: Success Green
+        '#198754',
+        // For Cancellation: Magenta Pink
+        '#e83e8c',
+        // CANCELLED: Danger Red
+        '#dc3545',
+    ];
+
+    // The labels define the order of the data and colors.
+    const pieChartLabels = [
+        'Overlapping', 'Parceling', 'GIS Post', 'Tool Access', 'Survey Stage',
+        'Cluster ID', 'HLD Sub', 'HLD App', 'Completed', 'For Cancellation', 'Cancelled'
+    ];
+
     new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['Overlapping', 'Parceling', 'GIS Post', 'Tool Access', 'Survey Stage', 'Cluster ID', 'HLD Sub', 'HLD App', 'Completed', 'For Cancellation', 'Cancelled'],
+            labels: pieChartLabels,
             datasets: [{
                 data: [
                     Number("{{ overlapping }}"), Number("{{ parceling }}"), Number("{{ gis_post }}"),
@@ -213,12 +242,7 @@
                     Number("{{ hld_submission }}"), Number("{{ hld_approval }}"),
                     Number("{{ completed }}"), Number("{{ for_cancellation }}"), Number("{{ cancelled }}")
                 ],
-                backgroundColor: [
-                    'rgba(255, 206, 86)', 'rgba(75, 192, 192)', 'rgba(255, 99, 132)',
-                    'rgba(54, 162, 235)', 'rgba(201, 203, 207)', 'rgba(153, 102, 255)',
-                    'rgba(255, 159, 64)', 'rgba(99, 255, 132)', 'rgba(16, 185, 129)',
-                    'rgba(255, 159, 64)', 'rgba(200, 50, 50)'
-                ]
+                backgroundColor: pieChartBackgroundColors // Using the precise, matching colors
             }]
         },
         options: {
@@ -229,31 +253,48 @@
 </script>
 
 {% else %}
-<div class="container text-center mt-5">
-    <h1 class="display-5 fw-bold">Telecom Project Tracker</h1>
-    <p class="lead mt-3">A centralized platform for managing telecom construction projects from planning to invoicing.
-    </p>
-    <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg mt-4 px-5">Get Started</a>
-
-    <footer class="footer fixed-bottom bg-light py-3">
-        <center>
-            <p>Copyright © 2025 JohnJabZ<br>
-
-                This project is released as open source.
-                Permission is hereby granted to use, copy, modify, merge, publish, distribute,
-                sublicense, and/or sell copies of the software, subject to the inclusion of this
-                copyright notice in all copies or substantial portions of the software.<br>
-
-                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-                IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-                FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-                AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-                LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-                OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-                SOFTWARE.
+<div class="container my-5">
+    <div class="row align-items-center justify-content-center g-5 py-5">
+        <div class="col-lg-6 text-center text-lg-start">
+            <h1 class="display-3 fw-bold lh-1 mb-3">
+                <span class="text-primary">Telecom</span> Project Tracker 📶
+            </h1>
+            <p class="col-lg-10 fs-4 mb-4">
+                Your **centralized platform** for managing **telecom construction projects** from initial planning and
+                site survey all the way through to final invoicing and completion. Get real-time stage tracking and
+                insights.
             </p>
-        </center>
-    </footer>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold">🚀 Get Started
+                    Now</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg px-4">Already have an account? Log
+                    In</a>
+            </div>
+        </div>
+        <div class="col-10 col-sm-8 col-lg-6">
+
+        </div>
+    </div>
 </div>
+
+<footer class="footer fixed-bottom bg-light py-3">
+    <center>
+        <p>Copyright &copy; 2025 JohnJabZ<br>
+
+            This project is released as open source.
+            Permission is hereby granted to use, copy, modify, merge, publish, distribute,
+            sublicense, and/or sell copies of the software, subject to the inclusion of this
+            copyright notice in all copies or substantial portions of the software.<br>
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+            SOFTWARE.
+        </p>
+    </center>
+</footer>
 {% endif %}
 {% endblock %}
