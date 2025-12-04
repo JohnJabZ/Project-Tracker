@@ -1,0 +1,45 @@
+<tr>
+    <td>{{ design.district_name }}</td>
+    <td>{{ design.cluster_name }}</td>
+    <td>
+        <a href="{% url 'design_detail' design.id %}" class="fw-bold text-primary text-decoration-none">
+            {{ design.work_order }}
+        </a>
+    </td>
+    <td>{{ design.scope_work }}</td>
+    <td>{{ design.subclass }}</td>
+    <td>{{ design.project_type }}</td>
+    <td>{{ design.year }}</td>
+    <td>{{ design.RITM }}</td>
+    <td>{{ design.region }}</td>
+    <td>{{ design.target_area }}</td>
+    <td>{{ design.date_assigned }}</td>
+    <td>{{ design.design_type }}</td>
+
+    <!-- STATUS -->
+    <td class="
+        {% if design.status == 'In Progress' %}wo-in-progress
+        {% elif design.status == 'Completed' %}wo-completed
+        {% elif design.status == 'Cancelled' %}wo-cancelled
+        {% endif %}
+    ">{{ design.status }}</td>
+
+    <!-- TOOLS -->
+    <td>{{ design.tools }}</td>
+
+    <!-- WO STATUS -->
+    <td class="
+        {% if design.wo_status == 'In Progress' %}wo-in-progress
+        {% elif design.wo_status == 'Completed' %}wo-completed
+        {% elif design.wo_status == 'Cancelled' %}wo-cancelled
+        {% endif %}
+    ">{{ design.wo_status }}</td>
+
+    <td>{{ design.responsible }}</td>
+
+    <!-- PRIORITY -->
+    <td>{{ design.priority }}</td>
+    <td>{{ design.remarks }}</td>
+    <td>{{ design.updated_at }}</td>
+    <td>{{ design.updated_by }}</td>
+</tr>

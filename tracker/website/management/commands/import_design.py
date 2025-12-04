@@ -93,6 +93,7 @@ class Command(BaseCommand):
                 remarks=clean_value(row.get("Remarks")),
                 updated_by=updated_by_user,
                 updated_at=parse_date(row.get("Updated At")),
+
             )
 
         # Final success message
@@ -110,4 +111,5 @@ class Command(BaseCommand):
         else:
             self.stdout.write(
                 self.style.SUCCESS("No duplicate work orders found.")
+
             )

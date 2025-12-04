@@ -41,6 +41,7 @@
         font-weight: 500;
     }
 
+    /* Hover styling */
     tbody tr:hover {
         background-color: #f5f7ff !important;
         cursor: pointer;
@@ -51,7 +52,7 @@
 
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold text-primary">📍 Design Records</h2>
+        <h2 class="fw-bold text-primary">📍 SOR Records</h2>
 
         <div class="header-buttons">
             {% if user.is_superuser %}
@@ -60,9 +61,9 @@
             </button>
             {% endif %}
 
-            <a class="btn btn-warning px-3 me-2" href="{% url 'export_design_csv' %}">📤 Export CSV</a>
-            <a class="btn btn-info px-3 me-2" href="{% url 'export_design_excel' %}">📄 Export Excel</a>
-            <a class="btn btn-primary px-3" href="{% url 'add_design_record' %}">
+            <a class="btn btn-warning px-3 me-2" href="#">📤 Export CSV</a>
+            <a class="btn btn-info px-3 me-2" href="#">📄 Export Excel</a>
+            <a class="btn btn-primary px-3" href="#">
                 ➕ Add Site
             </a>
         </div>
@@ -72,10 +73,10 @@
     <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form method="POST" action="{% url 'import_design' %}" enctype="multipart/form-data">
+                <form method="POST" action="#" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="modal-header">
-                        <h5 class="modal-title" id="importModalLabel">Import Design Data</h5>
+                        <h5 class="modal-title" id="importModalLabel">Import SOR Data</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -125,15 +126,58 @@
                 </tr>
             </thead>
 
-            <tbody id="designTable">
+            <tbody id="surveyTable">
                 {% for design in designs %}
-                {% include "_design_row.html" with design=design %}
+                <tr>
+                    <td>{{ design.district_name }}</td>
+                    <td>{{ design.cluster_name }}</td>
+                    <td>
+                        <a href="{% url 'design_detail' design.id %}" class="fw-bold text-primary text-decoration-none">
+                            {{ design.work_order }}
+                        </a>
+                    </td>
+                    <td>{{ design.scope_work }}</td>
+                    <td>{{ design.subclass }}</td>
+                    <td>{{ design.project_type }}</td>
+                    <td>{{ design.year }}</td>
+                    <td>{{ design.RITM }}</td>
+                    <td>{{ design.region }}</td>
+                    <td>{{ design.target_area }}</td>
+                    <td>{{ design.date_assigned }}</td>
+                    <td>{{ design.design_type }}</td>
+
+                    <!-- STATUS -->
+                    <td class="
+                        {% if design.status == 'In Progress' %}wo-in-progress
+                        {% elif design.status == 'Completed' %}wo-completed
+                        {% elif design.status == 'Cancelled' %}wo-cancelled
+                        {% endif %}
+                    ">{{ design.status }}</td>
+
+                    <!-- TOOLS -->
+                    <td>{{ design.tools }}</td>
+
+                    <!-- WO STATUS -->
+                    <td class="
+                        {% if design.wo_status == 'In Progress' %}wo-in-progress
+                        {% elif design.wo_status == 'Completed' %}wo-completed
+                        {% elif design.wo_status == 'Cancelled' %}wo-cancelled
+                        {% endif %}
+                    ">{{ design.wo_status }}</td>
+
+                    <td>{{ design.responsible }}</td>
+
+                    <!-- PRIORITY -->
+                    <td>{{ design.priority }}</td>
+
+                    <td>{{ design.remarks }}</td>
+                    <td>{{ design.updated_at }}</td>
+                    <td>{{ design.updated_by }}</td>
+                </tr>
                 {% endfor %}
             </tbody>
-
         </table>
     </div>
-    <div id="designPagination" class="my-3 d-flex justify-content-center"></div>
 
 </div>
 
@@ -152,7 +196,7 @@
 <script src="{% static 'js/liveSearch.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        enableLiveSearch("designTable", "searchInput", "designPagination", "/design/search/");
+        enableLiveSearch("surveyTable", "searchInput");
     });
 </script>
 

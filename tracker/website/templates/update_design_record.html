@@ -85,7 +85,7 @@
                     <button type="submit" class="btn btn-primary px-4 me-2">
                         💾 Update Record
                     </button>
-                    <a href="{% url 'design' %}" class="btn btn-secondary px-4">
+                    <a href="{% url 'design_detail' design_record.id %}" class="btn btn-secondary px-4">
                         ← Back
                     </a>
                 </div>
@@ -96,7 +96,7 @@
     <!-- Logs Section -->
     <div class="mt-4 text-center">
         <button class="btn btn-outline-dark btn-sm mb-2" type="button" data-bs-toggle="collapse"
-            data-bs-target="#activityLogs">
+            data-bs-target="#activityLogs" aria-expanded="false" aria-controls="activityLogs">
             📜 View Activity Logs
         </button>
 
@@ -108,9 +108,9 @@
                     <table class="table table-striped table-hover table-sm">
                         <thead class="table-dark text-center">
                             <tr>
-                                <th>Date</th>
-                                <th>User</th>
-                                <th>Details</th>
+                                <th style="width: 15%;">Date</th>
+                                <th style="width: 15%;">User</th>
+                                <th style="width: 70%;">Details</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -135,7 +135,7 @@
 </div>
 
 <script>
-    // Auto Mapping Script (unchanged)
+    // Auto Mapping Script
     document.addEventListener("DOMContentLoaded", function () {
         const statusField = document.getElementById("id_status");
         const responsibleField = document.getElementById("id_responsible");
@@ -147,16 +147,27 @@
             "For Survey": { responsible: "Hajdyah", wo_status: "In Progress" },
             "For Submission": { responsible: "Mr. Harris", wo_status: "In Progress" },
             "For Approval": { responsible: "Dawiyat", wo_status: "In Progress" },
-            "Completed": { responsible: "NA", tools: "5 - Completed", wo_status: "Completed", priority: "NA" },
+            "Completed": { responsible: "Done", tools: "5 - Completed", wo_status: "Completed", priority: "Done" },
             "For Cancellation": { responsible: "Hajdyah", tools: "6 - For Cancellation", wo_status: "In Progress", priority: "High" },
-            "Cancelled": { responsible: "NA", tools: "7 - Cancelled", wo_status: "Cancelled", priority: "NA" }
+            "Cancelled": { responsible: "Done", wo_status: "Cancelled", priority: "Done" }
         };
 
         function autoPopulateFields() {
             const selectedStatus = statusField.value;
             if (statusMapping[selectedStatus]) {
                 const mapping = statusMapping[selectedStatus];
-                responsibleField.value = mapping.responsible || responsibleField.value;
+
+                // Only attempt to set the responsible field if the target value exists in the options
+                if (mapping.responsible) {
+                    const responsibleOption = Array.from(responsibleField.options).find(opt => opt.text === mapping.responsible || opt.value === mapping.responsible);
+                    if (responsibleOption) {
+                        responsibleField.value = responsibleOption.value;
+                    } else if (responsibleField.value === '') {
+                        // Fallback: if the value is not in options but current value is empty, try setting it
+                        responsibleField.value = mapping.responsible;
+                    }
+                }
+
                 woStatusField.value = mapping.wo_status || woStatusField.value;
                 if (mapping.tools) toolsField.value = mapping.tools;
                 if (mapping.priority) priorityField.value = mapping.priority;
@@ -164,7 +175,6 @@
         }
 
         statusField.addEventListener("change", autoPopulateFields);
-        autoPopulateFields();
     });
 </script>
 

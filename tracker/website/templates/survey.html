@@ -165,6 +165,7 @@
             </tbody>
         </table>
     </div>
+    <div id="surveyPagination" class="my-3 d-flex justify-content-center"></div>
 
 </div>
 
@@ -183,8 +184,11 @@
 <script src="{% static 'js/liveSearch.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        enableLiveSearch("surveyTable", "searchInput");
+        enableLiveSearch("surveyTable", "searchInput", "surveyPagination", "/survey/search/");
     });
 </script>
+
+
+
 
 {% endblock %}

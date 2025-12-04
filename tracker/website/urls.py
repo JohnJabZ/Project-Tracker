@@ -42,4 +42,9 @@ urlpatterns = [
     path('design/export/excel/', views.export_design_excel,
          name="export_design_excel"),
     path('design/import/', views.import_design_view, name="import_design"),
+    path('design/search/', views.design_search, name='design_search'),
+
+
+    # SOR Paths
+    path('sor/', views.sor_list, name='sor'),
 ]
