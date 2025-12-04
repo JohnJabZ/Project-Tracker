@@ -180,7 +180,7 @@ def survey_list(request):
 
 def survey_detail(request, pk):
     if request.user.is_authenticated:
-        survey_record = survey.objects.get(id=pk)
+        survey_record = get_object_or_404(survey, id=pk)
 
         # Fetch logs for this specific record
         logs = ActivityLog.objects.filter(
@@ -233,13 +233,35 @@ def update_survey_record(request, pk):
         messages.error(request, "You must be logged in to do that.")
         return redirect('home')
 
-    current_record = survey.objects.get(id=pk)
+    current_record = get_object_or_404(survey, id=pk)
 
-    fields_to_check = ['status',
-                       'wo_status', 'tools', 'priority', 'remarks']
+    # 1. Define the mandatory fields to check for changes
+    fields_to_check = ['responsible', 'status',
+                       'tools', 'wo_status', 'priority', 'remarks']
 
-    old_data = {field: getattr(current_record, field)
-                for field in fields_to_check}
+    # 2. Collect OLD data as clean, comparable string representations (pre-form submission)
+    old_data = {}
+    for field in fields_to_check:
+        value = getattr(current_record, field)
+
+        if field == 'responsible':
+            # FIX: Use a try/except block to safely handle if 'responsible' is a string (CharField)
+            # or an object (ForeignKey). The error occurs here on GET request.
+            try:
+                # If it's a ForeignKey object (User, etc.), get its username or display field
+                old_data[field] = value.username if value else 'N/A'
+            except AttributeError:
+                # If it's a CharField string, just use the string value
+                # Use 'N/A' if null/empty
+                old_data[field] = str(value) if value else 'N/A'
+
+        elif field == 'remarks':
+            # Clean and strip whitespace to ensure "None", "" and " " are treated equally
+            old_data[field] = str(value).strip() if value else ''
+
+        else:
+            # For other fields, use the simple string value
+            old_data[field] = str(value)
 
     form = AddSurveyForm(request.POST or None,
                          instance=current_record, is_update=True)
@@ -247,21 +269,47 @@ def update_survey_record(request, pk):
     if request.method == 'POST' and form.is_valid():
         updated_instance = form.save(commit=False)
 
-        changed_fields = [
-            field for field in fields_to_check
-            if str(old_data[field]) != str(getattr(updated_instance, field))
-        ]
+        changed_fields = []
+        for field in fields_to_check:
+            new_value = getattr(updated_instance, field)
+            old_value_str = old_data[field]  # The pre-cleaned old value string
 
-        updated_instance.updated_by = request.user
-        updated_instance.save()
+            # Determine the comparable string for the NEW value (post-form submission)
+            new_value_str = ""
+            if field == 'responsible':
+                # Reapply the same defensive check for the new value
+                try:
+                    # If it's a ForeignKey object
+                    new_value_str = new_value.username if new_value else 'N/A'
+                except AttributeError:
+                    # If it's a CharField string
+                    new_value_str = str(new_value) if new_value else 'N/A'
 
+            elif field == 'remarks':
+                # Get the new instance's cleaned remarks
+                new_value_str = str(new_value).strip() if new_value else ''
+
+            else:
+                # Get the new instance's simple string value
+                new_value_str = str(new_value)
+
+            # Core comparison logic: Check if the clean old value differs from the clean new value
+            if old_value_str != new_value_str:
+                changed_fields.append(field)
+
+        # 3. Only save and log if changes were actually detected
         if changed_fields:
+            updated_instance.updated_by = request.user
+            updated_instance.save()
+
+            # Pass the pre-cleaned old_data dictionary to the logger
             log_changes(request, updated_instance, old_data, changed_fields)
         else:
-            print("No fields changed")  # Debug only
+            print("No fields changed.")
 
         messages.success(request, "Data Updated Successfully!")
-        return redirect('update_survey_record', pk=current_record.id)
+        # Use updated_instance.id for the redirect
+        return redirect('update_survey_record', pk=updated_instance.id)
 
     logs = ActivityLog.objects.filter(
         content_type=ContentType.objects.get_for_model(survey),
@@ -270,7 +318,7 @@ def update_survey_record(request, pk):
 
     return render(request, 'update_survey_record.html', {
         'form': form,
-        'record': current_record,
+        'design_record': current_record,
         'logs': logs
     })
 
@@ -513,46 +561,114 @@ def survey_filter(request, filter_type):
 
 
 def survey_search(request):
-    qs = survey.objects.all()
-    q = request.GET.get("q", "").strip()
-    page = int(request.GET.get("page", 1))
+    # 1. Get Parameters
+    global_query = request.GET.get('q', '').strip()
+    page = int(request.GET.get('page', 1))
 
-    # Column filters
-    for key, val in request.GET.items():
-        if key.startswith("col_") and val:
-            col_index = int(key.split("_")[1])
-            # Map column index to model field
-            col_map = [
-                "cluster_name", "work_order", "project_type", "region",
-                "RITM", "target_area", "date_assigned", "status",
-                "responsible", "tools", "wo_status", "priority",
-                "remarks", "updated_at", "updated_by__username"
-            ]
-            field = col_map[col_index]
-            qs = qs.filter(**{f"{field}__icontains": val})
+    # --- CRITICAL: Mapping Column Index to Model Field Name ---
+    # This must match the <input data-col="X"> in design.html and the field in models.py
+    COLUMN_FIELD_MAP = {
+        0: 'cluster_name',
+        1: 'work_order',
+        2: 'project_type',
+        3: 'region',
+        4: 'RITM',
+        5: 'target_area',
+        6: 'date_assigned',
+        7: 'status',
+        8: 'responsible',
+        9: 'tools',
+        10: 'wo_status',
+        11: 'priority',
+        12: 'remarks',
+        13: 'updated_at',
+        14: 'updated_by__username',    # Use __username for FK field
 
-    if q:
-        # global search across multiple fields
-        qs = qs.filter(
-            cluster_name__icontains=q
-        ) | qs.filter(work_order__icontains=q) \
-          | qs.filter(project_type__icontains=q) \
-          | qs.filter(region__icontains=q)
+    }
 
-    paginator = Paginator(qs.order_by("tools"), 50)  # 50 rows per page
+    # Start with all objects
+    survey_queryset = survey.objects.all().select_related('updated_by')
+
+    # 2. Apply Global Search (searchInput: 'q' parameter) - Search ALL TEXT fields
+    if global_query:
+        # Create an OR condition across all relevant text/char fields
+        q_objects = Q()
+        searchable_fields = [
+            'cluster_name', 'work_order', 'project_type',
+            'region',  'RITM', 'target_area',
+            'status', 'tools', 'wo_status', 'responsible', 'priority',
+            'remarks', 'updated_by__username'  # Search by updated_by's username
+        ]
+
+        for field in searchable_fields:
+            # Use __icontains for case-insensitive partial match
+            q_objects |= Q(**{f'{field}__icontains': global_query})
+
+        survey_queryset = survey_queryset.filter(q_objects)
+
+    # 3. Apply Column Filters (column-filter: 'col_X' parameters) - Search SPECIFIC fields
+    for key, value in request.GET.items():
+        if key.startswith('col_') and value.strip():
+            try:
+                col_index = int(key.split('_')[1])
+                field_name = COLUMN_FIELD_MAP.get(col_index)
+                filter_value = value.strip()
+
+                if field_name:
+                    # Special handling for Foreign Key (updated_by)
+                    if field_name == 'updated_by__username':
+                        survey_queryset = survey_queryset.filter(
+                            updated_by__username__icontains=filter_value)
+
+                    # Special handling for Integer/Date fields (year, target_area, date_assigned)
+                    elif field_name in ['year', 'target_area']:
+                        # Attempt exact match for numbers, ignore if not a valid number
+                        try:
+                            survey_queryset = survey_queryset.filter(
+                                **{f'{field_name}': int(filter_value)})
+                        except ValueError:
+                            # If not a valid number, skip filter for this column
+                            continue
+
+                    elif field_name in ['date_assigned', 'updated_at']:
+                        # For dates, an icontains search might match year/month, or a full date filter is complex
+                        # We'll use __icontains on the string representation for simple searching
+                        survey_queryset = survey_queryset.filter(
+                            **{f'{field_name}__icontains': filter_value})
+
+                    # Default: Apply __icontains for all other text/char fields
+                    else:
+                        survey_queryset = survey_queryset.filter(
+                            **{f'{field_name}__icontains': filter_value})
+
+            except (ValueError, IndexError):
+                # Ignore invalid column keys
+                continue
+
+    # 4. Pagination
+    PAGINATION_SIZE = 10
+    PAGE_WINDOW = 2  # Define the window size for pagination
+    paginator = Paginator(survey_queryset, PAGINATION_SIZE)
     page_obj = paginator.get_page(page)
 
-    rows = []
-    for s in page_obj:
-        rows.append({
-            "html": render_to_string("partials/survey_row.html", {"survey": s})
-        })
+    # Calculate smart page range to send to client
+    page_numbers = list(get_page_range(
+        page_obj.number, paginator.num_pages, PAGE_WINDOW))
 
-    return JsonResponse({
-        "rows": rows,
+    # 5. Prepare JSON Response
+    data = {
+        "rows": [{"html": render_to_string("_survey_row.html", {"survey": survey})} for survey in page_obj],
         "page": page_obj.number,
         "total_pages": paginator.num_pages,
-    })
+        # Send the calculated page numbers to the client
+        "page_numbers": page_numbers,
+        # Add next/previous existence for convenience
+        "has_next": page_obj.has_next(),
+        "has_previous": page_obj.has_previous(),
+        "next_page_number": page_obj.next_page_number() if page_obj.has_next() else None,
+        "previous_page_number": page_obj.previous_page_number() if page_obj.has_previous() else None,
+    }
+    return JsonResponse(data)
 
 
 # Design Views
@@ -723,7 +839,7 @@ def delete_design_record(request, pk):
 
 def design_filter(request, filter_type):
     """
-    Filter surveys by stage based on the filter_type from the dashboard.
+    Filter designs by stage based on the filter_type from the dashboard.
     """
     if filter_type == "for_survey":
         items = design.objects.filter(

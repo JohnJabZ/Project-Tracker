@@ -45,6 +45,12 @@
         background-color: #f5f7ff !important;
         cursor: pointer;
     }
+
+    /* Custom style for search icon positioning */
+    .input-group-text {
+        align-items: center;
+        justify-content: center;
+    }
 </style>
 
 <div class="container-fluid px-4 mt-4">
@@ -92,7 +98,8 @@
     <!-- Search -->
     <div class="input-group mb-3">
         <span class="input-group-text bg-dark text-white"><i class="bi bi-search"></i></span>
-        <input id="searchInput" type="search" class="form-control form-control-lg" placeholder="Search any field...">
+        <input id="searchInput" type="search" class="form-control form-control-lg"
+            placeholder="Search Cluster, Work Order, RITM, or anything...">
     </div>
 
     <!-- Table -->
@@ -120,53 +127,32 @@
 
             <tbody id="surveyTable">
                 {% for survey in surveys %}
+                {% include "_survey_row.html" with survey=survey %}
+                {% empty %}
                 <tr>
-                    <td>{{ survey.cluster_name }}</td>
-                    <td>
-                        <a href="{% url 'survey_detail' survey.id %}" class="fw-bold text-primary text-decoration-none">
-                            {{ survey.work_order }}
-                        </a>
-                    </td>
-                    <td>{{ survey.project_type }}</td>
-                    <td>{{ survey.region }}</td>
-                    <td>{{ survey.RITM }}</td>
-                    <td>{{ survey.target_area }}</td>
-                    <td>{{ survey.date_assigned }}</td>
-
-                    <!-- STATUS -->
-                    <td class="
-                        {% if survey.status == 'In Progress' %}wo-in-progress
-                        {% elif survey.status == 'Completed' %}wo-completed
-                        {% elif survey.status == 'Cancelled' %}wo-cancelled
-                        {% endif %}
-                    ">{{ survey.status }}</td>
-
-                    <td>{{ survey.responsible }}</td>
-
-                    <!-- TOOLS -->
-                    <td>{{ survey.tools }}</td>
-
-                    <!-- WO STATUS -->
-                    <td class="
-                        {% if survey.wo_status == 'In Progress' %}wo-in-progress
-                        {% elif survey.wo_status == 'Completed' %}wo-completed
-                        {% elif survey.wo_status == 'Cancelled' %}wo-cancelled
-                        {% endif %}
-                    ">{{ survey.wo_status }}</td>
-
-                    <!-- PRIORITY -->
-                    <td>{{ survey.priority }}</td>
-
-                    <td>{{ survey.remarks }}</td>
-                    <td>{{ survey.updated_at }}</td>
-                    <td>{{ survey.updated_by }}</td>
+                    <td colspan="15" class="text-center py-4 text-muted">No survey records found.</td>
                 </tr>
                 {% endfor %}
+
+                <!-- NEW: Row to show when data is being loaded via AJAX -->
+                <tr id="loadingRow" style="display: none;">
+                    <td colspan="15" class="text-center py-4 text-primary fw-bold">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        Loading data...
+                    </td>
+                </tr>
+
+                <!-- Row to show when no results are found after filtering/searching -->
+                <tr id="noSearchResults" style="display: none;">
+                    <td colspan="15" class="text-center py-4 text-danger">No results found matching your criteria.</td>
+                </tr>
             </tbody>
         </table>
     </div>
-    <div id="surveyPagination" class="my-3 d-flex justify-content-center"></div>
-
+    <footer class="footer fixed-bottom bg-light py-3">
+        <!-- Pagination Container -->
+        <div id="surveyPagination" class="my-3 d-flex justify-content-center"></div>
+    </footer>
 </div>
 
 {% else %}
@@ -184,11 +170,15 @@
 <script src="{% static 'js/liveSearch.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        enableLiveSearch("surveyTable", "searchInput", "surveyPagination", "/survey/search/");
+        // FIX: The URL is set to 'survey_search' to call the views.survey_search function 
+        // which correctly handles filtering and pagination using query parameters (GET).
+        enableLiveSearch(
+            "surveyTable",
+            "searchInput",
+            "surveyPagination",
+            "{% url 'survey_search' %}"
+        );
     });
 </script>
-
-
-
 
 {% endblock %}

@@ -1,0 +1,41 @@
+<tr>
+    <td>{{ survey.cluster_name }}</td>
+    <td>
+        <a href="{% url 'survey_detail' survey.id %}" class="fw-bold text-primary text-decoration-none">
+            {{ survey.work_order }}
+        </a>
+    </td>
+    <td>{{ survey.project_type }}</td>
+    <td>{{ survey.region }}</td>
+    <td>{{ survey.RITM }}</td>
+    <td>{{ survey.target_area }}</td>
+    <td>{{ survey.date_assigned }}</td>
+
+    <!-- STATUS -->
+    <td class="
+        {% if survey.status == 'In Progress' %}wo-in-progress
+        {% elif survey.status == 'Completed' %}wo-completed
+        {% elif survey.status == 'Cancelled' %}wo-cancelled
+        {% endif %}
+    ">{{ survey.status }}</td>
+
+    <td>{{ survey.responsible }}</td>
+
+    <!-- TOOLS -->
+    <td>{{ survey.tools }}</td>
+
+    <!-- WO STATUS -->
+    <td class="
+        {% if survey.wo_status == 'In Progress' %}wo-in-progress
+        {% elif survey.wo_status == 'Completed' %}wo-completed
+        {% elif survey.wo_status == 'Cancelled' %}wo-cancelled
+        {% endif %}
+    ">{{ survey.wo_status }}</td>
+
+    <!-- PRIORITY -->
+    <td>{{ survey.priority }}</td>
+
+    <td>{{ survey.remarks }}</td>
+    <td>{{ survey.updated_at }}</td>
+    <td>{{ survey.updated_by }}</td>
+</tr>

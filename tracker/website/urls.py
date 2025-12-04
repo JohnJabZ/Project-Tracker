@@ -21,6 +21,8 @@ urlpatterns = [
     path('survey/import/', views.import_survey_view, name="import_survey"),
     path('survey/filter/<str:filter_type>/',
          views.survey_filter, name='survey_filter'),
+    path('survey/survey-search/', views.survey_search, name='survey_search'),
+
 
     # Dashboard Paths
     path('dashboard_design', views.dashboard_design, name='dashboard_design'),
